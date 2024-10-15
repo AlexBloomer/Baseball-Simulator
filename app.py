@@ -44,21 +44,21 @@ def run_simulation_route():
 
     # Make teams
     team1Hitters = hitters[hitters['Team'] == team1Input]
-    team1Hitters = hitters[hitters['PA'] > 50]
+    team1Hitters = team1Hitters[team1Hitters['PA'] > 0]
     team2Hitters = hitters[hitters['Team'] == team2Input]
-    team2Hitters = hitters[hitters['PA'] > 50]
+    team2Hitters = team2Hitters[team2Hitters['PA'] > 0]
     team1Pitchers = pitchers[pitchers['Team'] == team1Input]
-    team1Pitchers = pitchers[pitchers['BF'] > 20]
+    team1Pitchers = team1Pitchers[team1Pitchers['BF'] > 20]
     team2Pitchers = pitchers[pitchers['Team'] == team2Input]
-    team2Pitchers = pitchers[pitchers['BF'] > 20]
+    team2Pitchers = team2Pitchers[team2Pitchers['BF'] > 20]
     team1PitchersPitches = pitchersPitches[pitchersPitches['Tm'] == team1Input]
-    team1PitchersPitches = pitchersPitches[pitchersPitches['PA'] > 50]
+    team1PitchersPitches = team1PitchersPitches[team1PitchersPitches['PA'] > 0]
     team2PitchersPitches = pitchersPitches[pitchersPitches['Tm'] == team2Input]
-    team2PitchersPitches = pitchersPitches[pitchersPitches['PA'] > 50]
+    team2PitchersPitches = team2PitchersPitches[team2PitchersPitches['PA'] > 0]
     team1HittersPitches = hittersPitches[hittersPitches['Tm'] == team1Input]
-    team1HittersPitches = hittersPitches[hittersPitches['PA'] > 50]
+    team1HittersPitches = team1HittersPitches[team1HittersPitches['PA'] > 0]
     team2HittersPitches = hittersPitches[hittersPitches['Tm'] == team2Input]
-    team2HittersPitches = hittersPitches[hittersPitches['PA'] > 50]
+    team2HittersPitches = team2HittersPitches[team2HittersPitches['PA'] > 10]
     team1 = Team(team1Input)
     team2 = Team(team2Input)
     curTime = time.time()

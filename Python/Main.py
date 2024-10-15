@@ -51,7 +51,7 @@ def run_simulation(team1, team2, numSims, update_callback, wait_for_user_callbac
                 'team2_wins': team2.wins,
                 'team1_name': team1.name,
                 'team2_name': team2.name,
-                'runners': game.bases.runners,
+                'runners': {},
                 'gameOver': False
             }
 
@@ -68,7 +68,7 @@ def run_simulation(team1, team2, numSims, update_callback, wait_for_user_callbac
         'team2_wins': team2.wins,
         'team1_name': team1.name,
         'team2_name': team2.name,
-        'runners': game.bases.runners,
+        'runners': {},
         'gameOver': True
     }
 

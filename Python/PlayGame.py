@@ -46,7 +46,12 @@ class Game:
 
         }
         return current_simulation_state
-                    
+
+    def get_weighted_random(self, target, spread):
+        # Create a list of numbers around the target with weights
+        numbers = list(range(target - spread, target + spread + 1))
+        weights = [1/(abs(target - num) + 1) for num in numbers]  # Weights are inversely proportional to distance
+        return random.choices(numbers, weights=weights)[0]              
 
     def playAtBat(self, hittingTeam, pitchingTeam):
 
@@ -80,6 +85,8 @@ class Game:
         # rnd = random.random()
         # pitcher.addPitches(4)
         pitcher.addPitches(max(1, round(random.gauss(pc, 1))))
+        # print(str(pc))
+        # print(str(max(1, round(random.gauss(pc, 1)))))
         if(self.outs < 2 and (self.bases.second() or self.bases.third())):
             sh = hitter.shPct() + ibb
             sf = hitter.sfPct() + sh
@@ -146,7 +153,7 @@ class Game:
         while self.outs < 3:
             leverage = 0 if abs(hittingTeam.runs - pitchingTeam.runs) > 5 else 1
             leverage = leverage if abs(hittingTeam.runs - pitchingTeam.runs) > 2 else 2
-            if(pitchingTeam.curPitcher == None or pitchingTeam.shouldPullPitcher(leverage, self.inning/9)):
+            if(pitchingTeam.curPitcher == None or ( pitchingTeam.shouldPullPitcher(leverage, self.inning/9))):
                 # print(f'Pitcher Pulled:\nInning: {self.inning}\tOuts:{self.outs}')
                 # print('PITCHER PULLED')
                 # self.outs = self.outs
