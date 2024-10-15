@@ -1,0 +1,140 @@
+body {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  margin: 0;
+  background-color: rgb(196, 160, 254);
+  /* position: relative; */
+}
+
+.TopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  background-color: rgb(147, 147, 255);
+  top: 0;
+  color: white;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.Title {
+  font-size: 50px;
+  text-align: center;
+  /* justify-content: center; */
+  flex-grow: 1;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  /* border-radius: 50; */
+  margin-left: 10px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+.linkList {
+  display: flex;
+  margin-left: auto;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.linkList li {
+  margin-left: 15px;
+}
+
+.linkList img {
+  /* flex-grow: 1; */
+  /* width: 50px;
+  height: 50px; */
+  border-radius: 10%;
+  /* margin-left: 10px; */
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+.pickTeams {
+  display: flex;
+  justify-content: center;
+}
+
+.pickAwayTeam {
+  margin-right: 20px;
+  padding: 5px 5px 10px 5px;
+  border: 3px solid navy;
+}
+.pickHomeTeam {
+  margin-right: 20px;
+  padding: 5px 5px 10px 5px;
+  border: 3px solid navy;
+}
+
+.lineups {
+  display: flex;
+  justify-content: center;
+}
+
+/* .buttons{
+  background-color: navy;
+  color: white;
+  border: 3px solid white
+  
+} */
+
+.hidden {
+  display: none;
+}
+
+.field {
+  position: relative;
+  left: 50%;
+  transform: translateX(-10vw);
+  width: 20vw; /*viewport height*/
+  height: 20vw;
+
+  background-color: green; /* Grass color */
+  border-radius: 50%;
+}
+
+.diamond {
+  position: absolute;
+  width: 15%; /* Width of the diamond */
+  height: 15%; /* Height of the diamond */
+  background-color: lightblue; /* Color of the diamond */
+  transform: rotate(45deg); /* Rotate to make it diamond-shaped */
+  /* Center the diamonds based on their width and height */
+  transform-origin: center center; /* Set origin for rotation */
+}
+
+.home {
+  top: 70%; /* Position for home plate (bottom center) */
+  left: 50%; /* Centered horizontally */
+  transform: translate(-50%, 50%) rotate(45deg); /* Center horizontally and rotate */
+}
+
+.first-base {
+  top: 50%; /* Centered vertically */
+  left: 95%; /* Position it to the right of the field */
+  transform: translate(-100%, -50%) rotate(45deg); /* Center vertically and rotate */
+}
+
+.second-base {
+  top: 5%; /* Position for second base (top center) */
+  left: 50%; /* Centered horizontally */
+  transform: translate(-50%, 0) rotate(45deg); /* Center horizontally and rotate */
+}
+
+.third-base {
+  top: 50%; /* Centered vertically */
+  left: 5%; /* Position for third base (left center) */
+  transform: translate(0, -50%) rotate(45deg); /* Center vertically and rotate */
+}
+
+/* To add text on top of the diamonds */
