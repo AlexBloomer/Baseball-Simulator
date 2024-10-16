@@ -31,6 +31,9 @@ class Game:
         return {str(key): value for key, value in stats.items()}
 
     def getCurrentSimulationState(self):
+        print(str(self.inning))
+        print(self.team1.boxScore)
+        print(self.team2.boxScore)
         current_simulation_state = {
             # 'current_simulation_number':  + 1,
             'team1_runs': self.team1.runs,
@@ -56,6 +59,8 @@ class Game:
             # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
             'team2_hitters_names': [hitter.name for hitter in self.team2.lineup],
             'team2_hitters_results': [(hitter.getBoxStats()) for hitter in self.team2.lineup],
+            'team1_box_score': self.team1.boxScore,
+            'team2_box_score': self.team2.boxScore
             # 'team2_pitchers_names': [pitcher.name for pitcher in self.team2.pitchingStaff],
             # 'team2_pitchers_results': [(pitcher.boxStats) for pitcher in self.team2.pitchingStaff],
             # 'team2_hitters_names': self.team2.lineup,
@@ -89,7 +94,8 @@ class Game:
             case Result.SACRIFICE_HIT:
                 self.resultString = f'{hitter.name} hit a sacrifice bunt' 
             
-        
+    def isHit(self, result):
+        return result == Result.SINGLE or result == Result.DOUBLE or result == Result.TRIPLE or result == Result.HOMERUN  
 
     def get_weighted_random(self, target, spread):
         # Create a list of numbers around the target with weights
@@ -198,6 +204,7 @@ class Game:
             
     def playHalf(self, hittingTeam, pitchingTeam, update_callback, wait_for_user_callback):
         # print("Next Half")
+        runsBefore = hittingTeam.runs
         if(not self.sim):
             # print(self.team1.name)
             # print(self.bases)
@@ -226,12 +233,18 @@ class Game:
             self.currentPitcher = pitcher
             hitter.addResult(res)
             pitcher.addResult(res)
+            hittingTeam.boxScore[str(self.inning)] = hittingTeam.runs - runsBefore
+            hittingTeam.boxScore['R'] = hittingTeam.runs
+            if(self.isHit(res)):
+                hittingTeam.boxScore['H'] += 1
             if not self.sim:
                 update_callback(self.getCurrentSimulationState())
             if(res == Result.OUT or res == Result.SACRIFICE_FLY or res == Result.SACRIFICE_HIT):
                 self.outs+=1
                 if(self.outs ==3):
                     hittingTeam.nextHitter()
+                    print(f'{self.inning}: {hittingTeam.runs - runsBefore}')
+                    hittingTeam.boxScore[str(self.inning)] = hittingTeam.runs - runsBefore
                     if(not self.sim):
                         update_callback(self.getCurrentSimulationState())
                         # print('Score: ')
@@ -253,6 +266,9 @@ class Game:
                 # print(f'{self.team2.name}: {self.team2.runs}')
             if(not self.sim):
                 wait_for_user_callback()
+            if(self.inning >=9 and hittingTeam == self.team2 and hittingTeam.runs > pitchingTeam.runs):
+                update_callback(self.getCurrentSimulationState())
+                return
             hittingTeam.nextHitter()
     
 

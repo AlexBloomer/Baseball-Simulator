@@ -33,6 +33,8 @@ def run_simulation(team1, team2, numSims, update_callback, wait_for_user_callbac
     game = Game(team1, team2, numSims > 2)  # Simulate the entire game
     print('after')
 
+    print(team1.pitchingStaff)
+    print(team2.pitchingStaff)
     for i in range(int(numSims)):
         winner = game.playGame(update_callback,wait_for_user_callback)
         team1.totalRuns += game.getRuns1()

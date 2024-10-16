@@ -23,6 +23,10 @@ class Team:
         self.relieverGames = 0
         self.relieverLikelihood = []
         self.totalRuns = 0
+        self.hits = 0
+        self.boxScoreKeys = ['Team', '1','2','3','4','5','6','7','8','9','R','H', 'E']
+        self.boxScore = dict.fromkeys(self.boxScoreKeys, 0)
+        self.boxScore['Team'] = self.name
         self.pitchSetup()
         self.nextPitcher = None
         self.curPitcherId = -1
@@ -52,7 +56,7 @@ class Team:
     def fillPitchingStaff(self, pitchingStaff, hitterPitches):
         i=0
         for index, row in pitchingStaff.iterrows():
-            if(row['G'] > 18):
+            if(row['G'] > 10):
                 filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
                 # pitchPerPA = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]['Pit/PA'].values[0]
                 # filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
@@ -65,10 +69,11 @@ class Team:
                     print(f"No matching pitcher found for {row['Player-additional']}.")
                     continue
                 self.addPitcher(Pitcher(row['Rk'],row['Player'],row['Age'],row['Team'],row['Lg'],['WAR'],row['W'],row['L'],row['W-L%'],row['ERA'],row['G'],row['GS'],row['GF'],row['CG'],row['SHO'],row['SV'],row['IP'],row['H'],row['R'],row['ER'],row['HR'],row['BB'],row['IBB'],row['SO'],row['HBP'],row['BK'],row['WP'],row['BF'],row['ERA+'],row['FIP'],row['WHIP'],row['H9'],row['HR9'],row['BB9'],row['SO9'],row['SO/BB'],row['Awards'],row['Player-additional'], pitchPerPA))
+        i = 0
         for pitcher in self.pitchingStaff:
             if pitcher.pitchType == PitcherType.STARTER:
                 self.rotation.append(pitcher)
-            elif pitcher.pitchType == PitcherType.RELIEVER and pitcher.g > 22:
+            elif pitcher.pitchType == PitcherType.RELIEVER and pitcher.g > 15:
                 self.relievers.append(pitcher)
             else:
                 self.closer = pitcher
@@ -195,7 +200,6 @@ class Team:
                 removalProbability = (self.curPitcher.pitchCount/maxPitches*.5 + 0.3*self.curPitcher.runSim + 0.025*leverage) ** 4
                 removalProbability = min(1.0, removalProbability)
                 return random.random() < removalProbability
-                
 
     def getHitterResults(self):
         # maxName = max(len(player.name) for player in self.lineup)

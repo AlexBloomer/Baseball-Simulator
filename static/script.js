@@ -24,6 +24,9 @@ const tableBody1 = document
 const tableBody2 = document
   .getElementById("playerTable2")
   .getElementsByTagName("tbody")[0];
+const boxScoreTable = document
+  .getElementById("boxScore")
+  .getElementsByTagName("tbody")[0];
 
 nextSimulationBtn.classList.add("hidden");
 simRunning.forEach((item) => {
@@ -288,6 +291,35 @@ function updateUI(data) {
         row.cells[9].textContent = data.team2_hitters_results[index]["OPS"];
       }
     });
+
+    let row = boxScoreTable.rows[0];
+    row.cells[0].textContent = data.team1_box_score["Team"];
+    row.cells[1].textContent = data.team1_box_score["1"];
+    row.cells[2].textContent = data.team1_box_score["2"];
+    row.cells[3].textContent = data.team1_box_score["3"];
+    row.cells[4].textContent = data.team1_box_score["4"];
+    row.cells[5].textContent = data.team1_box_score["5"];
+    row.cells[6].textContent = data.team1_box_score["6"];
+    row.cells[7].textContent = data.team1_box_score["7"];
+    row.cells[8].textContent = data.team1_box_score["8"];
+    row.cells[9].textContent = data.team1_box_score["9"];
+    row.cells[10].textContent = data.team1_box_score["R"];
+    row.cells[11].textContent = data.team1_box_score["H"];
+    row.cells[12].textContent = data.team1_box_score["E"];
+    row = boxScoreTable.rows[1];
+    row.cells[0].textContent = data.team2_box_score["Team"];
+    row.cells[1].textContent = data.team2_box_score["1"];
+    row.cells[2].textContent = data.team2_box_score["2"];
+    row.cells[3].textContent = data.team2_box_score["3"];
+    row.cells[4].textContent = data.team2_box_score["4"];
+    row.cells[5].textContent = data.team2_box_score["5"];
+    row.cells[6].textContent = data.team2_box_score["6"];
+    row.cells[7].textContent = data.team2_box_score["7"];
+    row.cells[8].textContent = data.team2_box_score["8"];
+    row.cells[9].textContent = data.team2_box_score["9"];
+    row.cells[10].textContent = data.team2_box_score["R"];
+    row.cells[11].textContent = data.team2_box_score["H"];
+    row.cells[12].textContent = data.team2_box_score["E"];
 
     // data.team1_pitchers_names.forEach((name, index) => {
     //   // let resultKeys = Object.keys(data.team1_hitters_results[index]);
