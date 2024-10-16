@@ -17,6 +17,12 @@ const lineupContainer1 = document.getElementById("lineup1");
 const lineupContainer2 = document.getElementById("lineup2");
 const simNotRunning = document.querySelectorAll(".simNotRunning");
 const simRunning = document.querySelectorAll(".simRunning");
+const tableBody1 = document
+  .getElementById("playerTable1")
+  .getElementsByTagName("tbody")[0];
+const tableBody2 = document
+  .getElementById("playerTable2")
+  .getElementsByTagName("tbody")[0];
 
 nextSimulationBtn.classList.add("hidden");
 simRunning.forEach((item) => {
@@ -143,9 +149,6 @@ runSimulationBtn.addEventListener("click", () => {
   simNotRunning.forEach((item) => {
     item.classList.add("hidden");
   });
-  simRunning.forEach((item) => {
-    item.classList.remove("hidden");
-  });
   nextSimulationBtn.classList.add("hidden");
   fetchUpdates();
   // document.getElementById("simulationState").innerHTML = `
@@ -153,6 +156,12 @@ runSimulationBtn.addEventListener("click", () => {
   // `;
   // Check if both teams are selected
   numSims = numSimsInput.value;
+  if (numSims < 3) {
+    console.log("under 3 sims ");
+    simRunning.forEach((item) => {
+      item.classList.remove("hidden");
+    });
+  }
   if (selectedTeam1 && selectedTeam2) {
     // Prepare the data to send
     // console.log(team1);
@@ -184,7 +193,7 @@ runSimulationBtn.addEventListener("click", () => {
   } else {
     // Display a message if teams are not selected
     document.getElementById(
-      "results"
+      "result"
     ).innerHTML = `<p>Please select both teams before running the simulation.</p>`;
   }
 });
@@ -235,6 +244,60 @@ function simulationEnded() {
 }
 
 function updateUI(data) {
+  if (!data.gameOver && numSims < 3) {
+    data.team1_hitters_names.forEach((name, index) => {
+      const row = tableBody1.rows[index];
+      if (row) {
+        row.cells[0].textContent = data.team1_hitters_results[index]["Name"];
+        row.cells[1].textContent =
+          data.team1_hitters_results[index]["Position"];
+        row.cells[2].textContent = data.team1_hitters_results[index]["AB"];
+        row.cells[3].textContent = data.team1_hitters_results[index]["R"];
+        row.cells[4].textContent = data.team1_hitters_results[index]["H"];
+        row.cells[5].textContent = data.team1_hitters_results[index]["RBI"];
+        row.cells[6].textContent = data.team1_hitters_results[index]["BB"];
+        row.cells[7].textContent = data.team1_hitters_results[index]["K"];
+        row.cells[8].textContent = data.team1_hitters_results[index]["AVG"];
+        row.cells[9].textContent = data.team1_hitters_results[index]["OPS"];
+      }
+    });
+    data.team2_hitters_names.forEach((name, index) => {
+      const row = tableBody2.rows[index];
+      if (row) {
+        row.cells[0].textContent = data.team2_hitters_results[index]["Name"];
+        row.cells[1].textContent =
+          data.team2_hitters_results[index]["Position"];
+        row.cells[2].textContent = data.team2_hitters_results[index]["AB"];
+        row.cells[3].textContent = data.team2_hitters_results[index]["R"];
+        row.cells[4].textContent = data.team2_hitters_results[index]["H"];
+        row.cells[5].textContent = data.team2_hitters_results[index]["RBI"];
+        row.cells[6].textContent = data.team2_hitters_results[index]["BB"];
+        row.cells[7].textContent = data.team2_hitters_results[index]["K"];
+        row.cells[8].textContent = data.team2_hitters_results[index]["AVG"];
+        row.cells[9].textContent = data.team2_hitters_results[index]["OPS"];
+      }
+    });
+
+    // data.team1_pitchers_names.forEach((name, index) => {
+    //   // let resultKeys = Object.keys(data.team1_hitters_results[index]);
+    //   // let resultValues = Object.values(data.team1_hitters_results[index]);
+    //   stats += `${name}:\n`;
+    //   for(const key in data.team1_pitchers_results[index]){
+    //     stats += `${key}: ${data.team1_pitchers_results[index][key]}`
+    //   }
+    //   stats += "\n"
+    // });
+    // data.team2_pitchers_names.forEach((name, index) => {
+    //   // let resultKeys = Object.keys(data.team1_hitters_results[index]);
+    //   // let resultValues = Object.values(data.team1_hitters_results[index]);
+    //   stats += `${name}:\n`;
+    //   for(const key in data.team2_pitchers_results[index]){
+    //     stats += `${key}: ${data.team2_pitchers_results[index][key]}`
+    //   }
+    //   stats += "\n"
+    // });
+  }
+  // console.log(stats);
   let runnerValues = Object.values(data.runners);
   let runnerKeys = Object.keys(data.runners);
   let runnerString = "";
@@ -273,16 +336,35 @@ function updateUI(data) {
     // ).innerHTML = `<p>Simulation Finished</p>`;
     simulationEnded();
   } else if (numSims <= 2) {
-    document.getElementById("results").innerHTML = `
+    // document.getElementById("results").innerHTML = `
+    document.getElementById("result").innerHTML = `
         <p>${data.team1_name}: ${data.team1_runs}&nbsp;
         ${x} ${data.inning}&nbsp;
-        ${data.team2_name}: ${data.team2_runs}</p>    
-        <p>Hitter: ${data.hitter}</p>
-        <p>Pitcher: ${data.pitcher}</p>
-        <p>Outs: ${data.outs}</p>
-        <p>Result: ${data.result}</p>
-        <p>${runnerString}</p>
+        ${data.team2_name}: ${data.team2_runs}</p>
+        <p>${data.resultString}</p>
+    `;
+    document.getElementById("below").innerHTML = `
+      <p>Outs: ${data.outs}</p>
+      <p>${runnerString}</p>
+    `;
+    // console.log(document.getElementById("below").offsetHeight);
+    if (data.topInning) {
+      document.getElementById("AwayPlayer").innerHTML = `
+        <p>${data.hitter}</p>
       `;
+      document.getElementById("HomePlayer").innerHTML = `
+        <p>${data.pitcher}</p>
+      `;
+    } else {
+      document.getElementById("HomePlayer").innerHTML = `
+        <p>${data.hitter}</p>
+      `;
+      document.getElementById("AwayPlayer").innerHTML = `
+        <p>${data.pitcher}</p>
+      `;
+    }
+    //     <p>Pitcher: ${data.pitcher}</p>
+    //   `;
     document.getElementById("wins").innerHTML = ``;
   }
   if (data.gameOver || numSims > 1) {

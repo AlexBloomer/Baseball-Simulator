@@ -60,6 +60,7 @@ class Pitcher:
         self.runSim = 0
         self.pitches = 0
         self.gamesSim = 0
+        
         # print(str(self.pitchPerPA))
         results = [Result.SINGLE, Result.DOUBLE, Result.TRIPLE, Result.HOMERUN, Result.WALK, Result.HIT_BY_PITCH, Result.INTENTIONAL_WALK, Result.SACRIFICE_FLY, Result.SACRIFICE_HIT, Result.OUT]
         self.totalStats = dict.fromkeys(results, 0)
@@ -165,5 +166,5 @@ class Pitcher:
             self.pitchType = PitcherType.RELIEVER
 
     def __str__(self):
-        return f"Name: {self.name}\tTeam: {self.team}\tPitch Type: {self.pitchType.value}\tGames: {self.g}\tERA: {self.era}\Whip:{self.whip} Player Code:{self.code}"
+        return f"Pitcher: {self.name}<br>Team: {self.team}<br>Pitch Type: {self.pitchType.value}<br>Games: {self.g}<br>ERA: {self.era}<br>Whip:{self.whip}"
     

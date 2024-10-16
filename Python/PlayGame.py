@@ -20,10 +20,16 @@ class Game:
         self.startTime = time.time()
         self.curTime = time.time()
         self.numGames = 0
+        self.resultString = ''
         # self.runs1=None
         # self.runs2=None
         self.outs = 0
         self.sim = sim
+    
+    def serialize_stats(self, stats):
+    # Convert enum keys to strings and keep values unchanged
+        return {str(key): value for key, value in stats.items()}
+
     def getCurrentSimulationState(self):
         current_simulation_state = {
             # 'current_simulation_number':  + 1,
@@ -41,11 +47,49 @@ class Game:
             'pitcher': self.currentPitcher.__str__(),
             'hitter': self.currentHitter.__str__(),
             'result': self.result.value if self.result is not None else "",
+            'resultString': self.resultString,
             'gameOver': False,
-            'topInning': self.topInning
+            'topInning': self.topInning,
+            'team1_hitters_names': [hitter.name for hitter in self.team1.lineup],
+            'team1_hitters_results': [(hitter.getBoxStats()) for hitter in self.team1.lineup],
+            # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
+            # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
+            'team2_hitters_names': [hitter.name for hitter in self.team2.lineup],
+            'team2_hitters_results': [(hitter.getBoxStats()) for hitter in self.team2.lineup],
+            # 'team2_pitchers_names': [pitcher.name for pitcher in self.team2.pitchingStaff],
+            # 'team2_pitchers_results': [(pitcher.boxStats) for pitcher in self.team2.pitchingStaff],
+            # 'team2_hitters_names': self.team2.lineup,
+            # 'team2_hitters_results': self.team2.lineup,
+            # 'team2_pitchers_names': self.team2.pitchingStaff,
+            # 'team2_pitchers_results': self.team2.pitchingStaff
 
         }
         return current_simulation_state
+
+    def setResultString(self, hitter, result):
+        match result:
+            case Result.OUT:
+                self.resultString = f'{hitter.name} got out' 
+            case Result.WALK:
+                self.resultString = f'{hitter.name} walked' 
+            case Result.HIT_BY_PITCH:
+                self.resultString = f'{hitter.name} was hit by a pitch' 
+            case Result.INTENTIONAL_WALK:
+                self.resultString = f'{hitter.name} was intentionally walked' 
+            case Result.SINGLE:
+                self.resultString = f'{hitter.name} singled' 
+            case Result.DOUBLE:
+                self.resultString = f'{hitter.name} doubled' 
+            case Result.TRIPLE:
+                self.resultString = f'{hitter.name} tripled' 
+            case Result.HOMERUN:
+                self.resultString = f'{hitter.name} hit a homerun!!' 
+            case Result.SACRIFICE_FLY:
+                self.resultString = f'{hitter.name} hit a sacrifice fly' 
+            case Result.SACRIFICE_HIT:
+                self.resultString = f'{hitter.name} hit a sacrifice bunt' 
+            
+        
 
     def get_weighted_random(self, target, spread):
         # Create a list of numbers around the target with weights
@@ -97,46 +141,55 @@ class Game:
         if(rnd < single):
             runs =self.bases.hit(hitter.name, 1)
             hittingTeam.runs+=runs
+            hitter.addRBI(runs)
             pitcher.addRuns(runs)
             return Result.SINGLE
         
         elif(rnd < double):
             runs = self.bases.hit(hitter.name, 2)
+            hitter.addRBI(runs)
             hittingTeam.runs+=runs
             pitcher.addRuns(runs)
             return Result.DOUBLE
         elif(rnd < triple):
             runs = self.bases.hit(hitter.name, 3)
+            hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.TRIPLE
         elif(rnd < homerun):
             runs = self.bases.advanceBases(4, False, False) + 1
+            hitter.addRBI(runs)
             hittingTeam.runs+=runs
             pitcher.addRuns(runs)
             return Result.HOMERUN
         elif(rnd < walk):
             runs=self.bases.walk(hitter.name)
+            hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.WALK
         elif(rnd < hbp):
             runs=self.bases.walk(hitter.name)
+            hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.HIT_BY_PITCH
         elif(rnd < ibb):
             runs=self.bases.walk(hitter.name)
+            hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.INTENTIONAL_WALK
         elif(rnd < sh):
             runs=self.bases.sacrifice()
+            hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.SACRIFICE_HIT
         elif(rnd < sf):
             runs=self.bases.sacrifice()
+            hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.SACRIFICE_FLY
@@ -167,6 +220,7 @@ class Game:
             # if(not self.sim):
                 # print(res.value)
             hitter = hittingTeam.getCurrentBatter()
+            self.setResultString(hitter, res)
             pitcher = pitchingTeam.getCurrentPitcher()
             self.currentHitter = hitter     
             self.currentPitcher = pitcher

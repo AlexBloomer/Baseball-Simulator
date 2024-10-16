@@ -59,13 +59,17 @@ class PositionPlayer:
         self.abSim = 0
         self.hitsSim = 0
         self.basesSim = 0
+        self.rbiSim = 0
+        self.runsSim = 0
         self.pitchPerPA = pitchPerPA
+        self.boxStatsKeys = ['Name', 'Position', 'AB', 'R', 'H', 'RBI', 'BB', 'K', 'AVG', 'OPS']
+        self.boxStats = dict.fromkeys(self.boxStatsKeys,0)
         results = [Result.SINGLE, Result.DOUBLE, Result.TRIPLE, Result.HOMERUN, Result.WALK, Result.HIT_BY_PITCH, Result.INTENTIONAL_WALK, Result.SACRIFICE_FLY, Result.SACRIFICE_HIT, Result.OUT]
         self.stats = dict.fromkeys(results, 0)
         results = ['At Bats', 'Hits', 'Total Bases', 'Batting Average Actual', 'Batting Average Sim', 'OPS Actual', 'OPS Sim', 'SLG Actual', 'SLG Sim', 'OBP Actual', 'OBP Sim']
         self.calcStats = dict.fromkeys(results,0)
     def __str__(self):
-        return f"Name: {self.name}\tTeam: {self.team}\tGames: {self.g}\tBatting Average: {self.ba}\tPosition:{self.position.value} Player Code:{self.code}"
+        return f"Hitter: {self.name}<br>Position: {self.position.value}<br>Team: {self.team}<br>AVG: {self.ba}<br>OPS: {self.ops}"
     
     def addResult(self, res):
         self.stats[res] += 1
@@ -73,9 +77,37 @@ class PositionPlayer:
         # print(f'Adding {res.value} to {self.name}\'s results')
             # self.thisGame.append(res)
         # print(f'Current Game Results: {self.getGameResults()}')
+    
+    def addRBI(self, runs):
+        self.rbiSim += runs
+    
+    def addRun(self):
+        self.runsSim += 1
+
+    def getBoxStats(self):
+        self.boxStats['Name'] = self.name
+        self.boxStats['Position'] = self.position.value
+        self.boxStats['AB'] = self.abSim
+        self.boxStats['R'] = self.runsSim
+        self.boxStats['H'] = self.hitsSim
+        self.boxStats['RBI'] = self.rbiSim
+        self.boxStats['BB'] = self.stats[Result.WALK]
+        self.hitsSim = self.stats[Result.SINGLE] + self.stats[Result.DOUBLE] + self.stats[Result.TRIPLE] + self.stats[Result.HOMERUN]
+        self.abSim = self.hitsSim + self.stats[Result.OUT]
+        avg = self.hitsSim/self.abSim if self.abSim != 0 else 0
+        self.boxStats['AVG'] = f"{avg:.3f}"
+        self.basesSim = self.stats[Result.SINGLE] + 2*self.stats[Result.DOUBLE] + 3*self.stats[Result.TRIPLE] + 4*self.stats[Result.HOMERUN]
+        onBase = self.hitsSim + self.stats[Result.WALK] + self.stats[Result.INTENTIONAL_WALK] + self.stats[Result.HIT_BY_PITCH]
+        obp = onBase/(self.paSim-self.stats[Result.SACRIFICE_HIT]) if self.paSim-self.stats[Result.SACRIFICE_HIT] != 0 else 0
+        slg = self.basesSim/self.abSim if self.abSim != 0 else 0
+        ops = obp + slg
+        self.boxStats['OPS'] = f"{ops:.3f}"
+        return self.boxStats
+    
+   
     def calculateStats(self):
-        self.hitsSim += self.stats[Result.SINGLE] + self.stats[Result.DOUBLE] + self.stats[Result.TRIPLE] + self.stats[Result.HOMERUN]
-        self.abSim += self.hitsSim + self.stats[Result.OUT]
+        self.hitsSim = self.stats[Result.SINGLE] + self.stats[Result.DOUBLE] + self.stats[Result.TRIPLE] + self.stats[Result.HOMERUN]
+        self.abSim = self.hitsSim + self.stats[Result.OUT]
         self.basesSim = self.stats[Result.SINGLE] + 2*self.stats[Result.DOUBLE] + 3*self.stats[Result.TRIPLE] + 4*self.stats[Result.HOMERUN]
         # onBase = self.paSim - self.stats[Result.OUT] - self.stats[Result.SACRIFICE_FLY] - self.stats[Result.SACRIFICE_HIT]
         onBase = self.hitsSim + self.stats[Result.WALK] + self.stats[Result.INTENTIONAL_WALK] + self.stats[Result.HIT_BY_PITCH]

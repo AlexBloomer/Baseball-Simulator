@@ -197,23 +197,24 @@ class Team:
                 return random.random() < removalProbability
                 
 
-    def getPlayerResults(self):
+    def getHitterResults(self):
         # maxName = max(len(player.name) for player in self.lineup)
         resultString = ''
+        resultString += f'{self.rotation[1].getGameResults()}\n'
+        # for player in self.relievers:
+        #     # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
+        #     resultString += f'{player.getGameResults()}\n'
         # for player in self.lineup:
         #     # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
         #     resultString += f'{player.getGameResults()}\n'
         # for player in self.rotation:
             # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
             # resultString += f'{player.getGameResults()}\n'
-        resultString += f'{self.rotation[1].getGameResults()}\n'
-        # for player in self.relievers:
-        #     # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
-        #     resultString += f'{player.getGameResults()}\n'
         #     # resultString = resultString.replace('\t', '    ')
         # resultString += f'{self.closer.getGameResults()}\n'
         return resultString
         # return resultString
+
 
     
 
