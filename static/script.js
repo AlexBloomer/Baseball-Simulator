@@ -17,6 +17,7 @@ const lineupContainer1 = document.getElementById("lineup1");
 const lineupContainer2 = document.getElementById("lineup2");
 const simNotRunning = document.querySelectorAll(".simNotRunning");
 const simRunning = document.querySelectorAll(".simRunning");
+let simEnded = false;
 const tableBody1 = document
   .getElementById("playerTable1")
   .getElementsByTagName("tbody")[0];
@@ -129,6 +130,12 @@ function simulation_update() {
 }
 
 nextSimulationBtn.addEventListener("click", () => {
+  if (!nextSimulationBtn.classList.contains("hidden")) {
+    nextSimulationBtn.classList.add("hidden");
+    console.log("hiding");
+  } else console.log("already hidden");
+
+  console.log(nextSimulationBtn.classList.contains("hidden"));
   simNotRunning.forEach((item) => {
     item.classList.remove("hidden");
   });
@@ -137,7 +144,6 @@ nextSimulationBtn.addEventListener("click", () => {
   });
   // lineupContainer1.classList.add("lineups");
   // lineupContainer2.classList.add("lineups");
-  nextSimulationBtn.classList.add("hidden");
 });
 
 // Add event listener for the Run Simulation button
@@ -149,7 +155,9 @@ runSimulationBtn.addEventListener("click", () => {
   simNotRunning.forEach((item) => {
     item.classList.add("hidden");
   });
-  nextSimulationBtn.classList.add("hidden");
+  // if (!nextSimulationBtn.classList.contains("hidden")) {
+  //   nextSimulationBtn.classList.add("hidden");
+  // }
   fetchUpdates();
   // document.getElementById("simulationState").innerHTML = `
   //   <p>In Progress</p>
@@ -240,7 +248,10 @@ function simulationEnded() {
   fetch("/simulation-ended", {
     method: "POST",
   });
-  nextSimulationBtn.classList.remove("hidden");
+  if (!simEnded) {
+    nextSimulationBtn.classList.remove("hidden");
+    simEnded = true;
+  }
 }
 
 function updateUI(data) {
@@ -331,6 +342,7 @@ function updateUI(data) {
     document.getElementById("first-base").style.backgroundColor = "lightblue";
     document.getElementById("second-base").style.backgroundColor = "lightblue";
     document.getElementById("third-base").style.backgroundColor = "lightblue";
+    console.log("over");
     // document.getElementById(
     //   "simulationState"
     // ).innerHTML = `<p>Simulation Finished</p>`;

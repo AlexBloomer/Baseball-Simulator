@@ -166,5 +166,5 @@ class Pitcher:
             self.pitchType = PitcherType.RELIEVER
 
     def __str__(self):
-        return f"Pitcher: {self.name}<br>Team: {self.team}<br>Pitch Type: {self.pitchType.value}<br>Games: {self.g}<br>ERA: {self.era}<br>Whip:{self.whip}"
+        return f"Pitcher: {self.name}<br>Team: {self.team}<br>Pitch Type: {self.pitchType.value}<br>Games: {self.g}<br>ERA: {self.era}<br>Whip: {self.whip}<br>Pitches: {self.pitchCount}<br>Runs: {self.runSim}"
     
