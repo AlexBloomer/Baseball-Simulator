@@ -24,12 +24,12 @@ body {
 .Title {
   position: absolute;
   left: 50%;
-  transform: translate(-50%);
+  transform: translateX(-50%);
   font-size: 50px;
-  /* text-align: center; */
-  justify-content: center;
-  flex-grow: 1;
-  /* flex: 1; */
+  text-align: center;
+  /* justify-content: center; */
+  /* flex-grow: 1; */
+  flex: 1;
 }
 
 .logo {
@@ -46,12 +46,11 @@ body {
 .linkList {
   display: flex;
   align-items: center;
-  /* flex: 1; */
+  flex: 1;
   padding: 0;
   margin: 0;
   list-style-type: none;
   margin-left: auto;
-  margin-right: 5px;
 }
 
 .linkList li {
