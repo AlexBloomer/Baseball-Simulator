@@ -258,8 +258,6 @@ class Game:
         self.team2.newGame()
         self.team1.runs = 1
         self.team2.runs = 0
-        # self.team1.setCurrentPitcher(1, 0, 0)
-        # self.team2.setCurrentPitcher(1, 0, 0)
         self.inning = 1 
         if(not self.sim):
             wait_for_user_callback()
