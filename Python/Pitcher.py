@@ -1,4 +1,7 @@
 from enum import Enum
+from collections import defaultdict
+from collections import Counter
+from array import array
 from Python.PositionPlayer import Result
 class PitcherType(Enum):
     STARTER = "Starter"
@@ -61,17 +64,17 @@ class Pitcher:
         self.pitches = 0
         self.gamesSim = 0
         
-        # print(str(self.pitchPerPA))
         results = [Result.SINGLE, Result.DOUBLE, Result.TRIPLE, Result.HOMERUN, Result.WALK, Result.HIT_BY_PITCH, Result.INTENTIONAL_WALK, Result.SACRIFICE_FLY, Result.SACRIFICE_HIT, Result.OUT]
         self.totalStats = dict.fromkeys(results, 0)
+        # self.totalStats = Counter({key: 0 for key in results})
         self.gameStats = dict.fromkeys(results, 0)
         results = ['Batters Faced', 'Hits Against', 'Walks Against', 'Batting Average Against Actual', 'Batting Average Against Sim', 'WHIP Actual', 'WHIP Sim',  'ERA Actual', 'ERA Sim']
         self.calcStats = dict.fromkeys(results,0)
     
     def addResult(self, res):
-        self.totalStats[res] += 1
-        self.gameStats[res] += 1
-        self.bfSim+=1
+            self.totalStats[res] += 1
+            self.gameStats[res] += 1
+            self.bfSim+=1
 
     def getGames(self):
         return self.gamesSim
@@ -83,7 +86,6 @@ class Pitcher:
         self.ipSim += 1
         
     def getIpSim(self):
-        # print(f'IPSim: {(self.gameStats[Result.OUT] + self.gameStats[Result.SACRIFICE_FLY] + self.gameStats[Result.SACRIFICE_HIT])/3}')
         return (self.gameStats[Result.OUT] + self.gameStats[Result.SACRIFICE_FLY] + self.gameStats[Result.SACRIFICE_HIT])/3 
     # def addInning(self):
     #     self.ipSim += 1
@@ -93,7 +95,7 @@ class Pitcher:
         self.pitchCount += num
         
     def calculateStats(self):
-        if(self.bfSim == 0):
+        if(self.bfSimTotal == 0):
             return
         self.hitsSim += self.totalStats[Result.SINGLE] + self.totalStats[Result.DOUBLE] + self.totalStats[Result.TRIPLE] + self.totalStats[Result.HOMERUN]
         self.abSim = self.hitsSim + self.totalStats[Result.OUT]
@@ -106,8 +108,6 @@ class Pitcher:
         elif fi == 0.2:
             outs += 2
         abActual = outs + self.h
-        # self.ipSim = self.stats[Result.OUT]/3
-        # print(self.ipSim)
         self.whipSim = (self.hitsSim + self.totalStats[Result.WALK])/self.ipSim
         self.calcStats['Batters Faced'] = self.bfSim
         self.calcStats['Hits Against'] = self.hitsSim

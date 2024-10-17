@@ -61,25 +61,10 @@ def run_simulation_route():
     team2HittersPitches = team2HittersPitches[team2HittersPitches['PA'] > 10]
     team1 = Team(team1Input)
     team2 = Team(team2Input)
-    curTime = time.time()
-    lastTime = curTime
-    print(f'A: 0')
     team1.fillLineup(team1Hitters, lineup1, team1HittersPitches)
-    curTime = time.time()
-    print(f'B: {curTime - lastTime}')
-    lastTime = curTime
     team2.fillLineup(team2Hitters, lineup2, team2HittersPitches)
-    curTime = time.time()
-    print(f'C: {curTime - lastTime}')
-    lastTime = curTime
     team1.fillPitchingStaff(team1Pitchers, team1PitchersPitches)
-    curTime = time.time()
-    print(f'D: {curTime - lastTime}')
-    lastTime = curTime
     team2.fillPitchingStaff(team2Pitchers, team2PitchersPitches)
-    curTime = time.time()
-    print(f'E: {curTime - lastTime}')
-    # lastTime = curTime
 
     team1.totalRuns, team2.totalRuns = 0, 0
     team1.wins, team2.wins = 0, 0
@@ -126,10 +111,7 @@ def getPlayers(team):
     teamHitters = hitters[hitters['Team'] == team]
     teamHitters = teamHitters[teamHitters['PA'] > 10]
     teamPitchers = pitchers[pitchers['Team'] == team]
-    # team1 = Team(team1Input)
-    # team1.fillLineup(team1Hitters)
-    # team1.fillPitchingStaff(team1Pitchers)
-    # print(teamHitters['Player'].tolist())
+
     
     return teamHitters['Player'].tolist()
     # return teamHitters
@@ -138,9 +120,6 @@ def getPlayers(team):
 def continue_route():
     global continueSimulation
     continueSimulation = True
-    # Python code that should run when the user clicks 'Continue'
-    # You could continue a paused simulation here
-    # print("User pressed continue")
     return jsonify({'message': 'Continuing process...'})
 
 if __name__ == '__main__':

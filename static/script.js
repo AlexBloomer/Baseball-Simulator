@@ -258,6 +258,12 @@ function simulationEnded() {
 }
 
 function updateUI(data) {
+  if (
+    !data.gameOver ||
+    (numSims > 2 && data.current_simulation_number == numSims)
+  ) {
+    simEnded = false;
+  }
   if (!data.gameOver && numSims < 3) {
     data.team1_hitters_names.forEach((name, index) => {
       const row = tableBody1.rows[index];

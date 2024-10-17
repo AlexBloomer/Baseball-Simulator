@@ -16,13 +16,12 @@ class Result(Enum):
     DOUBLE = "Double"
     TRIPLE = "Triple"
     HOMERUN = "Homerun"
-    OUT = "Out"
-    DOUBLE_PLAY = "Double Play"
     WALK = "Walk"
     HIT_BY_PITCH = "Hit By Pitch"
     INTENTIONAL_WALK = "Intentional Walk"
-    SACRIFICE_HIT = "Sacrifice Hit(Bunt)"
     SACRIFICE_FLY = "Sacrifice Fly"
+    SACRIFICE_HIT = "Sacrifice Hit(Bunt)"
+    OUT = "Out"
 
 
 class PositionPlayer:
@@ -74,9 +73,6 @@ class PositionPlayer:
     def addResult(self, res):
         self.stats[res] += 1
         self.paSim+=1
-        # print(f'Adding {res.value} to {self.name}\'s results')
-            # self.thisGame.append(res)
-        # print(f'Current Game Results: {self.getGameResults()}')
     
     def addRBI(self, runs):
         self.rbiSim += runs

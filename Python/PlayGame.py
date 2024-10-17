@@ -31,9 +31,6 @@ class Game:
         return {str(key): value for key, value in stats.items()}
 
     def getCurrentSimulationState(self):
-        print(str(self.inning))
-        print(self.team1.boxScore)
-        print(self.team2.boxScore)
         current_simulation_state = {
             # 'current_simulation_number':  + 1,
             'team1_runs': self.team1.runs,
@@ -104,16 +101,11 @@ class Game:
         return random.choices(numbers, weights=weights)[0]              
 
     def playAtBat(self, hittingTeam, pitchingTeam):
-
-        # batter = hittingTeam.curPos
-        # time.sleep(7)
         hitterWeight = .5
         pitcherWeight = .5
         hitter = hittingTeam.getCurrentBatter()
         pitcher = pitchingTeam.getCurrentPitcher()      
-        # if(not self.sim):
-        #     print('\nNEXT HITTER')
-        #     print(f"Current Hitter: {hitter}")
+
         rnd = random.random()
         single = hitterWeight * hitter.singlePct + pitcherWeight * pitcher.singlePct
         double = hitterWeight * hitter.doublePct + pitcherWeight * pitcher.doublePct + single
@@ -122,21 +114,11 @@ class Game:
         walk = hitterWeight * hitter.walkPct + pitcherWeight * pitcher.walkPct + homerun
         hbp = hitterWeight * hitter.hbpPct + pitcherWeight * pitcher.hbpPct + walk
         ibb = hitterWeight * hitter.ibbPct + pitcherWeight * pitcher.ibbPct + hbp
-        # double = hitter.doubles/hitter.pa + single
-        # triple = hitter.triples/hitter.pa + double
-        # hr = hitter.hr/hitter.pa + triple
-        # walk = hitter.walks/hitter.pa + hr
-        # hbp = hitter.hbp/hitter.pa + walk
-        # ibb = hitter.intentionalWalks/hitter.pa + hbp
-        # print(f'Chances:\n{single}\n{double}\n{triple}\n{homerun}\n{walk}\n{hbp}\n{ibb}')
         pc = hitterWeight * hitter.pitchPerPA + pitcherWeight * pitcher.pitchPerPA
-        # if(pitchCount < rnd):
-        # print(pitcher.pitches)
-        # rnd = random.random()
-        # pitcher.addPitches(4)
-        pitcher.addPitches(max(1, round(random.gauss(pc, 1))))
-        # print(str(pc))
-        # print(str(max(1, round(random.gauss(pc, 1)))))
+        if(not self.sim):
+            pitcher.addPitches(max(1, round(random.gauss(pc, 1))))
+        else:
+            pitcher.addPitches(int(pc))
         if(self.outs < 2 and (self.bases.second() or self.bases.third())):
             sh = hitter.shPct() + ibb
             sf = hitter.sfPct() + sh
@@ -203,86 +185,57 @@ class Game:
             return Result.OUT
             
     def playHalf(self, hittingTeam, pitchingTeam, update_callback, wait_for_user_callback):
-        # print("Next Half")
         runsBefore = hittingTeam.runs
         if(not self.sim):
-            # print(self.team1.name)
-            # print(self.bases)
-            # print(f'outs: {self.outs}')
             update_callback(self.getCurrentSimulationState())
+        # return
         while self.outs < 3:
+            # if(abs(hittingTeam.runs - pitchingTeam.runs))
             leverage = 0 if abs(hittingTeam.runs - pitchingTeam.runs) > 5 else 1
             leverage = leverage if abs(hittingTeam.runs - pitchingTeam.runs) > 2 else 2
-            if(pitchingTeam.curPitcher == None or ( pitchingTeam.shouldPullPitcher(leverage, self.inning/9))):
-                # print(f'Pitcher Pulled:\nInning: {self.inning}\tOuts:{self.outs}')
-                # print('PITCHER PULLED')
-                # self.outs = self.outs
-                # print(pitchingTeam.getCurrentPitcher())
+            if(pitchingTeam.curPitcher == None or ( pitchingTeam.shouldPullPitcher(0, self.inning/9))):
                 pitchingTeam.setCurrentPitcher(self.inning, self.outs, self.team1.runs-self.team2.runs)
-                # print(pitchingTeam.getCurrentPitcher())
+                # pass
             
-            # res = Result.OUT
             res = self.playAtBat(hittingTeam, pitchingTeam)
+            # self.outs +=1
+            # res = Result.OUT
             self.result = res
-            # if(not self.sim):
-                # print(res.value)
             hitter = hittingTeam.getCurrentBatter()
-            self.setResultString(hitter, res)
             pitcher = pitchingTeam.getCurrentPitcher()
             self.currentHitter = hitter     
             self.currentPitcher = pitcher
-            hitter.addResult(res)
             pitcher.addResult(res)
-            hittingTeam.boxScore[str(self.inning)] = hittingTeam.runs - runsBefore
-            hittingTeam.boxScore['R'] = hittingTeam.runs
-            if(self.isHit(res)):
-                hittingTeam.boxScore['H'] += 1
+            hitter.addResult(res)
             if not self.sim:
+                # These two lines take foreverrrrrrrrrrrrr
+                self.setResultString(hitter, res)
+                hittingTeam.boxScore[str(self.inning)] = hittingTeam.runs - runsBefore
+                hittingTeam.boxScore['R'] = hittingTeam.runs
+                if(self.isHit(res)):
+                    hittingTeam.boxScore['H'] += 1
                 update_callback(self.getCurrentSimulationState())
             if(res == Result.OUT or res == Result.SACRIFICE_FLY or res == Result.SACRIFICE_HIT):
                 self.outs+=1
                 if(self.outs ==3):
                     hittingTeam.nextHitter()
-                    print(f'{self.inning}: {hittingTeam.runs - runsBefore}')
-                    hittingTeam.boxScore[str(self.inning)] = hittingTeam.runs - runsBefore
                     if(not self.sim):
+                        hittingTeam.boxScore[str(self.inning)] = hittingTeam.runs - runsBefore
                         update_callback(self.getCurrentSimulationState())
-                        # print('Score: ')
-                        # print(f'{self.team1.name}: {self.team1.runs}')
-                        # print(f'{self.team2.name}: {self.team2.runs}')
-                        # print('INNING OVER')
-                        update_callback(self.getCurrentSimulationState())
-                    if(not self.sim):
                         wait_for_user_callback()
                     break
-            # self.outs+=1
             if not self.sim:
-                # print()
-                # print(f'outs: {self.outs}')
                 update_callback(self.getCurrentSimulationState())
-                # print(self.bases)
-                # print('Score: ')
-                # print(f'{self.team1.name}: {self.team1.runs}')
-                # print(f'{self.team2.name}: {self.team2.runs}')
-            if(not self.sim):
                 wait_for_user_callback()
             if(self.inning >=9 and hittingTeam == self.team2 and hittingTeam.runs > pitchingTeam.runs):
-                update_callback(self.getCurrentSimulationState())
                 return
             hittingTeam.nextHitter()
     
 
     def playInning(self, update_callback, wait_for_user_callback):
-        # print(f'Inning: {self.inning}')
-        # self.curTime = time.time()
-        # self.lastTime = self.curTime
         self.topInning = True
         self.outs = 0
-        # self.team1.getCurrentPitcher().addInning()
-        # self.team2.getCurrentPitcher().addInning()
         self.bases.clearBases()
-        # if(not self.sim):
-        #     update_callback(self.getCurrentSimulationState())
         self.playHalf(self.team1, self.team2, update_callback, wait_for_user_callback)
         if(self.inning >=9 and self.team1.runs < self.team2.runs):
             return
@@ -298,27 +251,23 @@ class Game:
 
     def playGame(self, update_callback, wait_for_user_callback):
         self.numGames +=1
-        # print(self.numGames)
         self.startTime = time.time()
         if(not self.sim):
             update_callback(self.getCurrentSimulationState())
         self.team1.newGame()
         self.team2.newGame()
-        self.team1.runs = 0
+        self.team1.runs = 1
         self.team2.runs = 0
+        # self.team1.setCurrentPitcher(1, 0, 0)
+        # self.team2.setCurrentPitcher(1, 0, 0)
         self.inning = 1 
         if(not self.sim):
             wait_for_user_callback()
-        # self.team1.setCurrentPitcher(1,0, 0)
-        # self.team2.setCurrentPitcher(1,0, 0)
         while(self.inning < 10 or self.team1.runs == self.team2.runs):
             if(not self.sim):
                 update_callback(self.getCurrentSimulationState())
-            # print(self.inning)
             self.playInning(update_callback, wait_for_user_callback)
             self.inning+=1
-        # print(self.team1.curPitcher.pitches)
-        # print(self.team2.curPitcher.pitches)
         winner = self.team1 if self.team1.runs > self.team2.runs else self.team2
         if(not self.sim):
             update_callback(self.getCurrentSimulationState())

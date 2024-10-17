@@ -35,7 +35,6 @@ class Team:
 
     def fillLineup(self, team, lineup, hitterPitches):
         i=0
-        # print(lineup)
         for name in lineup:
             for index, row in team.iterrows():
                 filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
@@ -51,7 +50,6 @@ class Team:
                 break
             else:
                 i+=1
-        # print(self.getLineup())
 
     def fillPitchingStaff(self, pitchingStaff, hitterPitches):
         i=0
@@ -61,11 +59,9 @@ class Team:
                 # pitchPerPA = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]['Pit/PA'].values[0]
                 # filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
                 if not filtered.empty:
-                    # print(filtered['Pit/PA'].values[0])
                     pitchPerPA = filtered['Pit/PA'].values[0]
                 else:
                     pitchPerPA = 5
-                    # print(row['Player'])
                     print(f"No matching pitcher found for {row['Player-additional']}.")
                     continue
                 self.addPitcher(Pitcher(row['Rk'],row['Player'],row['Age'],row['Team'],row['Lg'],['WAR'],row['W'],row['L'],row['W-L%'],row['ERA'],row['G'],row['GS'],row['GF'],row['CG'],row['SHO'],row['SV'],row['IP'],row['H'],row['R'],row['ER'],row['HR'],row['BB'],row['IBB'],row['SO'],row['HBP'],row['BK'],row['WP'],row['BF'],row['ERA+'],row['FIP'],row['WHIP'],row['H9'],row['HR9'],row['BB9'],row['SO9'],row['SO/BB'],row['Awards'],row['Player-additional'], pitchPerPA))
@@ -112,43 +108,16 @@ class Team:
 
 
     def setCurrentPitcher(self, inning, outs, scoreDif):
-        # print()
-        # self.curPitcher =  self.rotation[0]
-        # return
         if(inning == 1 and outs == 0):
-            # self.curPitcher = self.nextPitcher
-            # self.curPitcherId += self.rotation.index(self.curPitcher)
-            # self.nextPitcher = self.rotation[self.curPitcherId + 1] if self.curPitcherId < len(self.rotation) else self.rotation[0]
-            # self.curPitcher = random.choices(self.rotation, weights=self.starterLikelihood)[0]
             self.curPitcher = self.weighted_choice(self.rotation, self.starterWeights)
             self.curPitcher.gamesSim += 1
             self.numStarters += 1
-            # print(f'Setting starter {self.numStarters}')
         elif(inning < 9 or abs(scoreDif) > 3 or self.curPitcher.pitchType == PitcherType.CLOSER):
             self.curPitcher = self.weighted_choice(self.relievers, self.relieverWeights)
             self.curPitcher.gamesSim +=1
-            # self.curPitcher = random.choice(self.relievers)
-            # temp = random.choices(self.relievers, weights=self.relieverLikelihood, k=1)[0]
-            # while(temp == self.curPitcher):
-            #     temp = random.choices(self.relievers, weights=self.relieverLikelihood, k=1)[0]
-            # self.curPitcher = temp
-            # if self.curPitcher in self.relievers:
-            #     # Temporarily set the current pitcher's weight to 0
-            #     weights = self.relieverLikelihood[:]
-            #     cur_index = self.relievers.index(self.curPitcher)
-            #     weights[cur_index] = 0
-
-            #     # Choose a new reliever based on adjusted weights
-            #     self.curPitcher = random.choices(self.relievers, weights=weights, k=1)[0]
-            # else:
-            #     # If the current pitcher isn't in relievers, just pick a new one
-            #     self.curPitcher = random.choices(self.relievers, weights=self.relieverLikelihood, k=1)[0]
-            # self.curPitcher = random.choices(self.relievers, weights=self.relieverLikelihood, k=1)[0]
         else:
             self.curPitcher = self.closer
             self.curPitcher.gamesSim +=1
-
-        # self.curPitcher = self.rotation[1]
     
     def getCurrentPitcher(self):
         return self.curPitcher
@@ -176,48 +145,34 @@ class Team:
         return rotationString
     
     def shouldPullPitcher(self, leverage, scale):
-        # return True
-        maxPitches = 125
-        # print(f'Pitches: {self.curPitcher.pitchCount}\t scale: {scale}\truns: {self.curPitcher.runSim}\t innings: {self.curPitcher.getIpSim()}')
+        # return False
+        maxPitchesStarter = 125
+        maxPitchesReliever = 50
+        pitchCount = self.curPitcher.pitchCount
+        runSim = self.curPitcher.runSim
+        ipSim = self.curPitcher.getIpSim()
+        removal_prob = 0
         match self.curPitcher.pitchType:
             case PitcherType.STARTER:
-                removalProbability = (scale * self.curPitcher.pitchCount/maxPitches * .3 + scale * 0.1*self.curPitcher.runSim + 0.1*self.curPitcher.getIpSim() * scale) ** 4
-                removalProbability = min(1.0, removalProbability)
-                if(removalProbability < .25):
-                    removalProbability /= 10
-                return random.random() < removalProbability
+                removalProbability = (scale * pitchCount/maxPitchesStarter * .3 
+                                      + scale * 0.1*runSim 
+                                      + 0.1*ipSim * scale) ** 4
             case PitcherType.RELIEVER:
-                maxPitches = 50
-                removalProbability = (self.curPitcher.pitchCount/maxPitches*.5 + 0.2*self.curPitcher.runSim) ** 2
-                removalProbability = min(1.0, removalProbability)
+                removalProbability = (pitchCount/maxPitchesReliever*.5 
+                                      + 0.2*runSim
+                                      + .0125 * leverage) ** 2
                 if(scale == 1):
                     removalProbability *= 2
-                if(removalProbability < .25):
-                    removalProbability /= 10
-                return random.random() < removalProbability
             case PitcherType.CLOSER:
-                maxPitches = 50
-                removalProbability = (self.curPitcher.pitchCount/maxPitches*.5 + 0.3*self.curPitcher.runSim + 0.025*leverage) ** 4
-                removalProbability = min(1.0, removalProbability)
-                return random.random() < removalProbability
+                removalProbability = (pitchCount/maxPitchesReliever*.5 
+                                      + 0.3*runSim 
+                                      + 0.025*leverage) ** 4
+        removal_prob = min(1.0, removal_prob)
 
-    def getHitterResults(self):
-        # maxName = max(len(player.name) for player in self.lineup)
-        resultString = ''
-        resultString += f'{self.rotation[1].getGameResults()}\n'
-        # for player in self.relievers:
-        #     # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
-        #     resultString += f'{player.getGameResults()}\n'
-        # for player in self.lineup:
-        #     # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
-        #     resultString += f'{player.getGameResults()}\n'
-        # for player in self.rotation:
-            # resultString += f'{player.name}({player.paSim})\n {player.getGameResults()}\n'
-            # resultString += f'{player.getGameResults()}\n'
-        #     # resultString = resultString.replace('\t', '    ')
-        # resultString += f'{self.closer.getGameResults()}\n'
-        return resultString
-        # return resultString
+        # Adjust probability if it's low
+        if removal_prob < 0.25:
+            removal_prob /= 10
+        return random.random() < removalProbability
 
 
     
