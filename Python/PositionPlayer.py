@@ -1,5 +1,6 @@
 from enum import Enum
-# from Main import Result
+
+# Postition Enum
 class Position(Enum):
     DH = "Designated Hitter"
     CATCHER = "Catcher"
@@ -11,6 +12,7 @@ class Position(Enum):
     RIGHT_FIELD = "Right Field"
     LEFT_FIELD = "Left Field"
 
+# Result Enum
 class Result(Enum):
     SINGLE = "Single"
     DOUBLE = "Double"

@@ -8,8 +8,9 @@ class PitcherType(Enum):
     RELIEVER = "Reliever"
     CLOSER = "Closer"
     
-
+# Pitcher Object
 class Pitcher:
+    # Constructor to create a pitcher object
     def __init__(self, Rk,name,Age,Team,Lg,WAR,W,L,winPct,ERA,G,GS,GF,CG,SHO,SV,IP,H,R,ER,HR,BB,IBB,SO,HBP,BK,WP,BF,ERAPlus,FIP,WHIP,H9,HR9,BB9,SO9,SOperBB,Awards,code, pitchPerPA):
         self.name = name
         self.team = Team
@@ -71,29 +72,35 @@ class Pitcher:
         results = ['Batters Faced', 'Hits Against', 'Walks Against', 'Batting Average Against Actual', 'Batting Average Against Sim', 'WHIP Actual', 'WHIP Sim',  'ERA Actual', 'ERA Sim']
         self.calcStats = dict.fromkeys(results,0)
     
+    # Add a result to pitcher's dictionary of results
     def addResult(self, res):
             self.totalStats[res] += 1
             self.gameStats[res] += 1
             self.bfSim+=1
 
+    # Returns how many games they played in the sim
     def getGames(self):
         return self.gamesSim
     
-    def addRuns(self, num):
-        self.runSim += num
+    # Add runs to pitchers stats
+    def addRuns(self, runs):
+        self.runSim += runs
     
+    
+    # Add innings to pitchers stats
     def addInning(self):
         self.ipSim += 1
-        
+
+    # Gets how many innings the pitcher has pitched this game  
     def getIpSim(self):
         return (self.gameStats[Result.OUT] + self.gameStats[Result.SACRIFICE_FLY] + self.gameStats[Result.SACRIFICE_HIT])/3 
-    # def addInning(self):
-    #     self.ipSim += 1
     
+    # Add pitches for an at bat
     def addPitches(self, num):
         self.pitches += num
         self.pitchCount += num
-        
+
+    # Calculate the pitchers stats based on their results  
     def calculateStats(self):
         if(self.bfSimTotal == 0):
             return
@@ -157,6 +164,7 @@ class Pitcher:
         
         return results
 
+    # Set if pitcher is a starter, reliever, or closer
     def setPitchType(self):
         if(self.g != 0 and self.gs/self.g > 0.5):
             self.pitchType = PitcherType.STARTER
@@ -165,6 +173,7 @@ class Pitcher:
         else:
             self.pitchType = PitcherType.RELIEVER
 
+    # ToString for pitcher
     def __str__(self):
         return f"Pitcher: {self.name}<br>Team: {self.team}<br>Pitch Type: {self.pitchType.value}<br>Games: {self.g}<br>ERA: {self.era}<br>Whip: {self.whip}<br>Pitches: {self.pitchCount}<br>Runs: {self.runSim}"
     

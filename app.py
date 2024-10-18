@@ -100,6 +100,25 @@ def simEnded():
         'message': 'Simulation Over'
         })
 
+
+# Function for updating the Javascript file with information from python file
+@app.route('/simulation-update', methods=['GET'])
+def get_simulation_update():
+    return jsonify(current_simulation_state)
+
+# Get lineup for JS file to display when user clicks a team
+@app.route('/get-lineup')
+def get_lineup():
+    team = request.args.get('team')
+    players = getHitters(team)
+    return jsonify(players=players)
+
+# Get hitters from CSV file for the team teh user picked
+def getHitters(team):
+    teamHitters = hitters[hitters['Team'] == team]
+    teamHitters = teamHitters[teamHitters['PA'] > 10]
+    return teamHitters['Player'].tolist()
+
 # Function that waits for user to press next batter before continueing code
 def wait_for_user_callback():
     global continueSimulation
@@ -107,29 +126,7 @@ def wait_for_user_callback():
     while not continueSimulation:
         time.sleep(0.1)
 
-# Function for updating the Javascript file with information from python file
-@app.route('/simulation-update', methods=['GET'])
-def get_simulation_update():
-    return jsonify(current_simulation_state)
-
-# 
-@app.route('/get-lineup')
-def get_lineup():
-    team = request.args.get('team')
-    players = getPlayers(team)
-    return jsonify(players=players)
-
-def getPlayers(team):
-
-    # Make teams
-    teamHitters = hitters[hitters['Team'] == team]
-    teamHitters = teamHitters[teamHitters['PA'] > 10]
-    teamPitchers = pitchers[pitchers['Team'] == team]
-
-    
-    return teamHitters['Player'].tolist()
-    # return teamHitters
-
+# Function that checks if user has pressed next batter button
 @app.route('/continue', methods=['POST'])
 def continue_route():
     global continueSimulation
