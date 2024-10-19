@@ -70,7 +70,7 @@ class PositionPlayer:
         results = ['At Bats', 'Hits', 'Total Bases', 'Batting Average Actual', 'Batting Average Sim', 'OPS Actual', 'OPS Sim', 'SLG Actual', 'SLG Sim', 'OBP Actual', 'OBP Sim']
         self.calcStats = dict.fromkeys(results,0)
     def __str__(self):
-        return f"Hitter: {self.name}<br>Position: {self.position.value}<br>Team: {self.team}<br>AVG: {self.ba}<br>OPS: {self.ops}"
+        return f"{self.name}<br>Position: {self.position.value}<br>Team: {self.team}<br>AVG: {self.ba}<br>OPS: {self.ops}"
     
     def addResult(self, res):
         self.stats[res] += 1

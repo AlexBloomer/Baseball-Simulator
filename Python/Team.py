@@ -108,7 +108,7 @@ class Team:
 
 
     def setCurrentPitcher(self, inning, outs, scoreDif):
-        if(inning == 1 and outs == 0):
+        if(inning == 1 and outs == 0 or self.curPitcher == None):
             self.curPitcher = self.weighted_choice(self.rotation, self.starterWeights)
             self.curPitcher.gamesSim += 1
             self.numStarters += 1
@@ -118,13 +118,18 @@ class Team:
         else:
             self.curPitcher = self.closer
             self.curPitcher.gamesSim +=1
+        # print(self.curPitcher)
     
     def getCurrentPitcher(self):
+        # print(self.curPitcher)
         return self.curPitcher
         
     def nextHitter(self):
         self.curPos = (self.curPos+1) if self.curPos<8 else 0
         
+    def getOnDeckHitter(self):
+        return self.lineup[(self.curPos+1) if self.curPos<8 else 0]
+
     def getCurrentBatter(self):
         return self.lineup[self.curPos]
     

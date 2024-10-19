@@ -17,6 +17,8 @@ const lineupContainer1 = document.getElementById("lineup1");
 const lineupContainer2 = document.getElementById("lineup2");
 const simNotRunning = document.querySelectorAll(".simNotRunning");
 const simRunning = document.querySelectorAll(".simRunning");
+const lineupsHtml = document.querySelector(".lineups");
+lineupsHtml.classList.add("hidden");
 let simEnded = false;
 const tableBody1 = document
   .getElementById("playerTable1")
@@ -35,6 +37,8 @@ simRunning.forEach((item) => {
 // Add event listeners for when the selection changes on both dropdowns
 team1Select.addEventListener("change", () => {
   selectedTeam1 = team1Select.value; // Update selected team1
+  lineupsHtml.classList.remove("hidden");
+
   // populateLineup()
   fetch("/get-lineup?team=" + selectedTeam1)
     .then((response) => response.json())
@@ -45,6 +49,7 @@ team1Select.addEventListener("change", () => {
 
 team2Select.addEventListener("change", () => {
   selectedTeam2 = team2Select.value; // Update selected team2
+  lineupsHtml.classList.remove("hidden");
 
   fetch("/get-lineup?team=" + selectedTeam2)
     .then((response) => response.json())
@@ -400,14 +405,17 @@ function updateUI(data) {
     // console.log(document.getElementById("below").offsetHeight);
     if (data.topInning) {
       document.getElementById("AwayPlayer").innerHTML = `
-        <p>${data.hitter}</p>
+        <p>Hitter: ${data.hitter}<br>
+        On Deck: ${data.onDeckHitter}</p>
       `;
+      console.log(data.pitcher);
       document.getElementById("HomePlayer").innerHTML = `
         <p>${data.pitcher}</p>
       `;
     } else {
       document.getElementById("HomePlayer").innerHTML = `
-        <p>${data.hitter}</p>
+        <p>Hitter: ${data.hitter}<br>
+        On Deck: ${data.onDeckHitter}</p>
       `;
       document.getElementById("AwayPlayer").innerHTML = `
         <p>${data.pitcher}</p>

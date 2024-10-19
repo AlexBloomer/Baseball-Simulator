@@ -31,9 +31,12 @@ class Game:
         self.outs = 0
         self.sim = sim
 
+        
+
     # Update JS with new information
     def getCurrentSimulationState(self):
         #  Update the currentSimState variable with new information
+        # print("getting current pitcher")
         currentSimState = {
             'team1_runs': self.team1.runs,
             'team2_runs': self.team2.runs,
@@ -46,8 +49,11 @@ class Game:
             'runners': self.bases.runners,
             'outs': self.outs,
             'inning': self.inning,
-            'pitcher': self.currentPitcher.__str__(),
-            'hitter': self.currentHitter.__str__(),
+            # 'pitcher': self.currentPitcher.__str__(),
+            'pitcher': self.team2.getCurrentPitcher().__str__() if self.topInning else self.team1.getCurrentPitcher().__str__(),
+            # 'hitter': self.currentHitter.__str__(),
+            'hitter': self.team1.getCurrentBatter().__str__() if self.topInning else self.team2.getCurrentBatter().__str__(),
+            'onDeckHitter': self.team1.getOnDeckHitter().__str__() if self.topInning else self.team2.getOnDeckHitter().__str__(),
             'result': self.result.value if self.result is not None else "",
             'resultString': self.resultString,
             'gameOver': False,
@@ -280,16 +286,19 @@ class Game:
         Return: winning team
     """
     def playGame(self, update_callback, waitForNextBatter):
+        self.topInning = True
         self.numGames +=1
         self.startTime = time.time()
-        if(not self.sim):
-            update_callback(self.getCurrentSimulationState())
         self.team1.newGame()
         self.team2.newGame()
-        self.team1.runs = 1
+        self.team1.runs = 0
         self.team2.runs = 0
+        self.team1.setCurrentPitcher(self.inning, self.outs, self.team1.runs-self.team2.runs)
+        self.team2.setCurrentPitcher(self.inning, self.outs, self.team1.runs-self.team2.runs)
+        self.currentPitcher = self.team1.getCurrentPitcher()
         self.inning = 1 
         if(not self.sim):
+            update_callback(self.getCurrentSimulationState())
             waitForNextBatter()
         
         # Play until they've played 9 innings or until one team is winning after 9 innings

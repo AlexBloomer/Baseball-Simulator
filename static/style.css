@@ -86,16 +86,20 @@ body {
 }
 
 .lineups {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
+  border: 3px solid navy;
+  background-color: rgb(147, 147, 255);
+  color: white;
+  border-radius: 10%;
 }
 
-/* .buttons{
-  background-color: navy;
-  color: white;
-  border: 3px solid white
-  
-} */
+.lineups ol {
+  padding: 10px 10px 10px 10px;
+  flex: 0 0 auto; /* This makes each <ol> take up only the width it needs */
+  margin: 0 10px;
+  margin-left: 20px;
+}
 
 .hidden {
   display: none;
@@ -261,9 +265,3 @@ th {
   align-items: center;
   justify-content: center;
 }
-
-/* .Left,
-.Right,
-.Center {
-  border: 5px solid black;
-} */
