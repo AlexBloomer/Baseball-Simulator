@@ -50,6 +50,14 @@ class Team:
                 break
             else:
                 i+=1
+    def fillLineupTest(self, team, hitterPitches):
+        i=0
+        for index, row in team.iterrows():
+            self.addHitter(PositionPlayer(row['Player'], row['Team'], row['G'], row['PA'],row['AB'],row['H'],row['2B'],row['3B'],row['HR'],row['BB'],row['SO'],row['BA'],row['OBP'],row['OPS'], row['SLG'], row['HBP'],row['SH'],row['SF'],row['IBB'],row['Pos'],row['Player-additional'], 4))
+            if(i==8):
+                break
+            else:
+                i+=1
 
     def fillPitchingStaff(self, pitchingStaff, hitterPitches):
         i=0

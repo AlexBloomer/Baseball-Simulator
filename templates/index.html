@@ -12,16 +12,20 @@
   </head>
   <body>
     <div class="TopBar">
-      <a href="https://www.mlb.com/">
-        <img
-          src="{{ url_for('static', filename='Pictures/mlbLogo.png') }}"
-          alt="MLB Logo"
-          class="logo"
-        />
-      </a>
-      <div class="logo"></div>
+      <ul class="navList">
+        <a href="{{ url_for('season') }}">Go to Season Page</a>
+      </ul>
       <h1 class="Title">Baseball Simulation</h1>
       <ul class="linkList">
+        <li>
+          <a href="https://www.mlb.com/">
+            <img
+              src="{{ url_for('static', filename='Pictures/mlbLogo.png') }}"
+              alt="MLB Logo"
+              style="height: 50px; width: 50px"
+            />
+          </a>
+        </li>
         <li>
           <a href="https://www.baseball-reference.com/">
             <img
@@ -30,6 +34,7 @@
               style="height: 50px"
           /></a>
         </li>
+
         <li>
           <a href="https://github.com/AlexBloomer">
             <img

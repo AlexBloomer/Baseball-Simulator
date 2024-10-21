@@ -1,17 +1,18 @@
 # python_code/main_simulation.py
 from Python.PositionPlayer import *
 from Python.PlayGame import Game
+from Python.PlaySeason import Season
 import time
 
-""" Main function that runs the simulation
-    Args:
-        team1: Away Team
-        team2: Home Team
-        numSims: Number of simulations to run
-        update_callback: Function to update the JS code with data from python
-        waitForNextBatter: Function to wait for user to press button before continuing
-"""
-def run_simulation(team1, team2, numSims, update_callback, waitForNextBatter):
+def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
+    """ Main function that runs the simulation
+        Args:
+            team1: Away Team
+            team2: Home Team
+            numSims: Number of simulations to run
+            update_callback: Function to update the JS code with data from python
+            waitForNextBatter: Function to wait for user to press button before continuing
+    """
     global currentSimState
     game = Game(team1, team2, numSims > 2)  # Create Game object. If more than 2 sims simulate entire thing immediately, otherwise show each play
     
@@ -89,3 +90,9 @@ def run_simulation(team1, team2, numSims, update_callback, waitForNextBatter):
     }
 
     return results
+
+def simulateSeason(team, update_callback, waitForNextBatter):
+    season = Season(team)
+    record = season.playSeason()
+    print(record)
+    

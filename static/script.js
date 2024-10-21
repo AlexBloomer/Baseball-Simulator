@@ -331,31 +331,10 @@ function updateUI(data) {
     row.cells[10].textContent = data.team2_box_score["R"];
     row.cells[11].textContent = data.team2_box_score["H"];
     row.cells[12].textContent = data.team2_box_score["E"];
-
-    // data.team1_pitchers_names.forEach((name, index) => {
-    //   // let resultKeys = Object.keys(data.team1_hitters_results[index]);
-    //   // let resultValues = Object.values(data.team1_hitters_results[index]);
-    //   stats += `${name}:\n`;
-    //   for(const key in data.team1_pitchers_results[index]){
-    //     stats += `${key}: ${data.team1_pitchers_results[index][key]}`
-    //   }
-    //   stats += "\n"
-    // });
-    // data.team2_pitchers_names.forEach((name, index) => {
-    //   // let resultKeys = Object.keys(data.team1_hitters_results[index]);
-    //   // let resultValues = Object.values(data.team1_hitters_results[index]);
-    //   stats += `${name}:\n`;
-    //   for(const key in data.team2_pitchers_results[index]){
-    //     stats += `${key}: ${data.team2_pitchers_results[index][key]}`
-    //   }
-    //   stats += "\n"
-    // });
   }
-  // console.log(stats);
   let runnerValues = Object.values(data.runners);
   let runnerKeys = Object.keys(data.runners);
   let runnerString = "";
-  // console.log(data.team1_total_runs);
   first = runnerValues.includes(1);
   second = runnerValues.includes(2);
   third = runnerValues.includes(3);
@@ -442,3 +421,9 @@ continueBtn.addEventListener("click", function () {
     fetchUpdates(); // Get the next update after continuing
   });
 });
+
+function openSeasonPage() {
+  fetch("/season", {
+    method: "POST",
+  });
+}

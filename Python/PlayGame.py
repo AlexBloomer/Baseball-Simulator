@@ -99,15 +99,15 @@ class Game:
     def isHit(self, result):
         return result == Result.SINGLE or result == Result.DOUBLE or result == Result.TRIPLE or result == Result.HOMERUN             
 
-    """ Plays one at bat
-        Args:
-            hittingTeam: the hitting team
-            pitchingTeam: the pitching team
-        
-        Returns:
-            The result of the at bat which is a Result enum (ex. Result.SINGLE)
-    """
     def playAtBat(self, hittingTeam, pitchingTeam):
+        """ Plays one at bat
+            Args:
+                hittingTeam: the hitting team
+                pitchingTeam: the pitching team
+            
+            Returns:
+                The result of the at bat which is a Result enum (ex. Result.SINGLE)
+        """
         # hitter and pitcher's stats are weighted equally
         hitterWeight = .5
         pitcherWeight = .5
@@ -278,14 +278,14 @@ class Game:
     def getRuns2(self):
         return self.team2.runs
 
-    """ Play entire game
-        Args:
-            update_callback: function to update javascript file with information
-            waitForNextBatter: function to wait until user clicks nextBatter button
-        
-        Return: winning team
-    """
     def playGame(self, update_callback, waitForNextBatter):
+        """ Play entire game
+            Args:
+                update_callback: function to update javascript file with information
+                waitForNextBatter: function to wait until user clicks nextBatter button
+            
+            Return: winning team
+        """
         self.topInning = True
         self.numGames +=1
         self.startTime = time.time()

@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, render_template
 from threading import Thread
-from Python.Main import run_simulation
+# from Python.MainMulti import run_simulation
+from Python.Main import simulateGames
 from Python.Team import Team
 import pandas as pd
 import time
@@ -27,9 +28,17 @@ pitchersPitches = pd.read_csv('Data/PitchersPitches2024.csv') # Read pitchers pi
 def index():
     return render_template('index.html')  # Render HTML page
 
+@app.route('/game')
+def game():
+    return render_template('index.html')  # Render HTML page
+
+@app.route('/season')
+def season():
+    return render_template('season.html')  # Render HTML page
+
 # Route for starting simulation
 @app.route('/run-simulation', methods=['POST'])
-def run_simulation_route():
+def simulateGamesRoute():
     global team1, team2
     global simInProgress
     global current_simulation_state
@@ -78,7 +87,7 @@ def run_simulation_route():
     team1.wins, team2.wins = 0, 0
 
     # Call Main.py function run_simulation from thread
-    thread = Thread(target=run_simulation, args=(team1, team2, numSims, update_callback, wait_for_user_callback))
+    thread = Thread(target=simulateGames, args=(team1, team2, numSims, update_callback, wait_for_user_callback))
     thread.start()
 
     # thread.join()

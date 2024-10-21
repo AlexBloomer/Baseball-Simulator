@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baseball Simulation</title>
+    <link rel="stylesheet" href="static\style.css" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="TopBar">
+      <ul class="navList">
+        <li>
+          <a href="{{ url_for('index') }}">Go to Game Page</a>
+        </li>
+      </ul>
+      <h1 class="Title">Simulate Season</h1>
+      <ul class="linkList">
+        <li>
+          <a href="https://www.mlb.com/">
+            <img
+              src="{{ url_for('static', filename='Pictures/mlbLogo.png') }}"
+              alt="MLB Logo"
+              style="height: 50px; width: 50px"
+            />
+          </a>
+        </li>
+        <li>
+          <a href="https://www.baseball-reference.com/">
+            <img
+              src="{{ url_for('static', filename='Pictures/baseballReferenceLogo.png') }}"
+              alt="Baseball Reference Logo"
+              style="height: 50px"
+          /></a>
+        </li>
+
+        <li>
+          <a href="https://github.com/AlexBloomer">
+            <img
+              src="{{ url_for('static', filename='Pictures/githubLogo.png') }}"
+              alt="Github Logo"
+              style="height: 50px; width: 50px"
+          /></a>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
