@@ -6,14 +6,14 @@ class Bases:
     def clearBases(self):
         self.runners.clear()  # Clear all runners
 
-    def hit(self, name, base):
+    def hit(self, player, base):
         runs = self.advanceBases(base, False, False)
-        self.runners[name] = base  # Add a runner with an ID
+        self.runners[player] = base  # Add a runner with an ID
         return runs
     
-    def walk(self, name):
+    def walk(self, player):
         runs = self.advanceBases(1, True, False)
-        self.runners[name] = 1  # Add a runner with an ID
+        self.runners[player] = 1  # Add a runner with an ID
         return runs
     
     def sacrifice(self):
@@ -45,19 +45,18 @@ class Bases:
 
         # Advance each runner
         firstToThird = .25
-        for name in list(self.runners.keys()):  # Iterate through the keys
-            new_position = self.runners[name] + numBases
+        for player in list(self.runners.keys()):  # Iterate through the keys
+            new_position = self.runners[player] + numBases
             if(not walk):
                 rnd = random.random()
-                match self.runners[name]:
+                match self.runners[player]:
                     case 1:
                         if(numBases==1 and not sac and not self.third()):
                             if(rnd < firstToThird):
                                 new_position += 1
                         elif(numBases==2 and not sac):
-                            if(rnd < .5):
+                            if(True or rnd < .5):
                                 new_position += 1
-                                break
                     case 2:
                         if(numBases==1 and not sac):
                             if(rnd < .65):
@@ -66,19 +65,20 @@ class Bases:
                                     firstToThird = .9
                                     
 
-                        
-            if(walk and not self.prevFull(name)):
+                      
+            if(walk and not self.prevFull(player)):
                 continue
             # Check if the runner has scored
             if new_position >= 4:
                 score += 1
-                runners_to_remove.append(name)  # Mark for removal
+                runners_to_remove.append(player)  # Mark for removal
             else:
-                self.runners[name] = new_position  # Update runner's position
+                self.runners[player] = new_position  # Update runner's position
 
         # Remove runners who have scored
-        for name in runners_to_remove:
-            del self.runners[name]
+        for player in runners_to_remove:
+            player.runsSim += 1
+            del self.runners[player]
 
         return score
 

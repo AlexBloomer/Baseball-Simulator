@@ -95,8 +95,8 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
 
 def simulateSeason(team, update_callback, waitForNextBatter):
     season = Season(team)
-    for i in range(10):
-        record = season.simSeason(update_callback, waitForNextBatter)
+    # for i in range(10):
+    record = season.simSeason(update_callback, waitForNextBatter)
     currentSimState = {
         'sim_game': False,
         'end_sim': True,

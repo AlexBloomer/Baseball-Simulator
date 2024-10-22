@@ -37,6 +37,7 @@ class Game:
     def getCurrentSimulationState(self):
         #  Update the currentSimState variable with new information
         # print("getting current pitcher")
+        # tempRunners = {runner.name: value for runner, value in self.bases.runners.items()}
         currentSimState = {
             'sim_game': True,
             'team1_runs': self.team1.runs,
@@ -47,7 +48,7 @@ class Game:
             'team2_wins': self.team2.wins,
             'team1_name': self.team1.name,
             'team2_name': self.team2.name,
-            'runners': self.bases.runners,
+            'runners': {runner.name: value for runner, value in self.bases.runners.items()},
             'outs': self.outs,
             'inning': self.inning,
             # 'pitcher': self.currentPitcher.__str__(),
@@ -145,20 +146,19 @@ class Game:
         # Else if statement to check which result happened based on random number
         # then return result and add runs to both team and players
         if(rnd < single):
-            runs =self.bases.hit(hitter.name, 1)
+            runs =self.bases.hit(hitter, 1)
             hittingTeam.runs+=runs
             hitter.addRBI(runs)
             pitcher.addRuns(runs)
             return Result.SINGLE
-        
         elif(rnd < double):
-            runs = self.bases.hit(hitter.name, 2)
+            runs = self.bases.hit(hitter, 2)
             hitter.addRBI(runs)
             hittingTeam.runs+=runs
             pitcher.addRuns(runs)
             return Result.DOUBLE
         elif(rnd < triple):
-            runs = self.bases.hit(hitter.name, 3)
+            runs = self.bases.hit(hitter, 3)
             hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
@@ -166,23 +166,24 @@ class Game:
         elif(rnd < homerun):
             runs = self.bases.advanceBases(4, False, False) + 1
             hitter.addRBI(runs)
+            hitter.runsSim+=1
             hittingTeam.runs+=runs
             pitcher.addRuns(runs)
             return Result.HOMERUN
         elif(rnd < walk):
-            runs=self.bases.walk(hitter.name)
+            runs=self.bases.walk(hitter)
             hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.WALK
         elif(rnd < hbp):
-            runs=self.bases.walk(hitter.name)
+            runs=self.bases.walk(hitter)
             hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
             return Result.HIT_BY_PITCH
         elif(rnd < ibb):
-            runs=self.bases.walk(hitter.name)
+            runs=self.bases.walk(hitter)
             hitter.addRBI(runs)
             hittingTeam.runs += runs
             pitcher.addRuns(runs)
