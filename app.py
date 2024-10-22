@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template
 from threading import Thread
 # from Python.MainMulti import run_simulation
 from Python.Main import simulateGames
+from Python.Main import simulateSeason
 from Python.Team import Team
 import pandas as pd
 import time
@@ -14,8 +15,10 @@ continueSimulation = False # Used to wait for the user to press next batter butt
 simInProgress = False # Used to prevent program from starting a new sim if one is already running
 
 # Teams
-team1 = None # Away Team
+team = None # Away Team
 team2 = None # Home TEam
+
+team = None # Sim Season Team
 
 # CSV files
 hitters = pd.read_csv('Data/Hitters2024.csv') # Read hitters csv
@@ -39,7 +42,7 @@ def season():
 # Route for starting simulation
 @app.route('/run-simulation', methods=['POST'])
 def simulateGamesRoute():
-    global team1, team2
+    global team, team2
     global simInProgress
     global current_simulation_state
 
@@ -75,19 +78,62 @@ def simulateGamesRoute():
     team1HittersPitches = team1HittersPitches[team1HittersPitches['PA'] > 0] # Make sure hitters have at least 1 plate appearance
     team2HittersPitches = hittersPitches[hittersPitches['Tm'] == team2Input]
     team2HittersPitches = team2HittersPitches[team2HittersPitches['PA'] > 10] # Make sure pitchers have at least 10 plate appearance
-    team1 = Team(team1Input)
+    team = Team(team1Input)
     team2 = Team(team2Input)
-    team1.fillLineup(team1Hitters, lineup1, team1HittersPitches)
+    team.fillLineup(team1Hitters, lineup1, team1HittersPitches)
     team2.fillLineup(team2Hitters, lineup2, team2HittersPitches)
-    team1.fillPitchingStaff(team1Pitchers, team1PitchersPitches)
+    team.fillPitchingStaff(team1Pitchers, team1PitchersPitches)
     team2.fillPitchingStaff(team2Pitchers, team2PitchersPitches)
 
     # Set runs and wins to zero for each team
-    team1.totalRuns, team2.totalRuns = 0, 0
-    team1.wins, team2.wins = 0, 0
+    team.totalRuns, team2.totalRuns = 0, 0
+    team.wins, team2.wins = 0, 0
 
     # Call Main.py function run_simulation from thread
-    thread = Thread(target=simulateGames, args=(team1, team2, numSims, update_callback, wait_for_user_callback))
+    thread = Thread(target=simulateGames, args=(team, team2, numSims, update_callback, wait_for_user_callback))
+    thread.start()
+
+    # thread.join()
+    # result = queue.get()
+    simInProgress = True
+    return jsonify({"message": "Simulation started"}), 200
+
+@app.route('/simulate-season', methods=['POST'])
+def simulateSeasonRoute():
+    global team
+    global simInProgress
+    global current_simulation_state
+
+    data = request.get_json() # Get input from javascript file
+
+    if not data:
+        return jsonify({"error": "Invalid data"}), 400  # Return an error if no data is sent
+    
+    if simInProgress:
+        return jsonify({"error": "simulation already in progress"}), 400 # Return an error if a simulation is already running
+    
+    # JS input values
+    teamInput = data.get('team')
+    lineup = data.get('lineup')
+
+    # Make teams
+    teamHitters = hitters[hitters['Team'] == teamInput]
+    teamHitters = teamHitters[teamHitters['PA'] > 0] # Make sure hitters have at least 1 plate appearance
+    teamPitchers = pitchers[pitchers['Team'] == teamInput]
+    teamPitchers = teamPitchers[teamPitchers['BF'] > 20] # Make sure pitchers have at least 20 batters faced
+    teamPitchersPitches = pitchersPitches[pitchersPitches['Tm'] == teamInput]
+    teamPitchersPitches = teamPitchersPitches[teamPitchersPitches['PA'] > 0] # Make sure hitters have at least 1 plate appearance
+    teamHittersPitches = hittersPitches[hittersPitches['Tm'] == teamInput]
+    teamHittersPitches = teamHittersPitches[teamHittersPitches['PA'] > 0] # Make sure hitters have at least 1 plate appearance
+    team = Team(teamInput)
+    print(f'filling lineup for: {teamInput}')
+    team.fillLineup(teamHitters, lineup, teamHittersPitches)
+    team.fillPitchingStaff(teamPitchers, teamPitchersPitches)
+
+    # Set runs and wins to zero for each team
+
+    # Call Main.py function run_simulation from thread
+    thread = Thread(target=simulateSeason, args=(team, update_callback, wait_for_user_callback))
     thread.start()
 
     # thread.join()

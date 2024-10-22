@@ -62,6 +62,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
 
     #  update the currentSimState with the final information
     currentSimState = {
+        'sim_game':True,
         'current_simulation_number': i + 1,
         'team1_total_runs': team1.totalRuns,
         'team2_total_runs': team2.totalRuns,
@@ -78,6 +79,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
     
     # Results to be returned to app.py
     results = {
+        'sim_game': False,
         'team1_name': team1.name,
         'team2_name': team2.name,
         'team1_wins': team1.wins,
@@ -93,6 +95,15 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
 
 def simulateSeason(team, update_callback, waitForNextBatter):
     season = Season(team)
-    record = season.playSeason()
-    print(record)
+    for i in range(10):
+        record = season.simSeason(update_callback, waitForNextBatter)
+    currentSimState = {
+        'sim_game': False,
+        'end_sim': True,
+        'team': team.name,
+        'wins': record[0],
+        'losses': record[1]
+    }
+    update_callback(currentSimState)
+    # print(record)
     

@@ -38,6 +38,7 @@ class Game:
         #  Update the currentSimState variable with new information
         # print("getting current pitcher")
         currentSimState = {
+            'sim_game': True,
             'team1_runs': self.team1.runs,
             'team2_runs': self.team2.runs,
             'team1_total_runs': self.team1.totalRuns,

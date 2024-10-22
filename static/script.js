@@ -1,5 +1,5 @@
 // Variables to store selected team values
-let selectedTeam1 = "";
+let selectedTeam = "";
 let selectedTeam2 = "";
 let numSims = 1;
 let first = (second = third = false);
@@ -7,7 +7,7 @@ let userLineup1 = [];
 let userLineup2 = [];
 
 // Get the dropdown elements and the Run Simulation button
-const team1Select = document.getElementById("team1");
+const teamSelect = document.getElementById("team1");
 const team2Select = document.getElementById("team2");
 const numSimsInput = document.getElementById("numSimsInput");
 const runSimulationBtn = document.getElementById("runSimulation");
@@ -35,12 +35,12 @@ simRunning.forEach((item) => {
   item.classList.add("hidden");
 });
 // Add event listeners for when the selection changes on both dropdowns
-team1Select.addEventListener("change", () => {
-  selectedTeam1 = team1Select.value; // Update selected team1
+teamSelect.addEventListener("change", () => {
+  selectedTeam = teamSelect.value; // Update selected team1
   lineupsHtml.classList.remove("hidden");
 
   // populateLineup()
-  fetch("/get-lineup?team=" + selectedTeam1)
+  fetch("/get-lineup?team=" + selectedTeam)
     .then((response) => response.json())
     .then((data) => {
       populateLineup1(data.players);
@@ -178,12 +178,12 @@ runSimulationBtn.addEventListener("click", () => {
       item.classList.remove("hidden");
     });
   }
-  if (selectedTeam1 && selectedTeam2) {
+  if (selectedTeam && selectedTeam2) {
     // Prepare the data to send
     // console.log(team1);
     // console.log(team2);
     const data = {
-      team1: selectedTeam1,
+      team1: selectedTeam,
       team2: selectedTeam2,
       numSims: numSims,
       lineup1: userLineup1,
@@ -224,7 +224,9 @@ function fetchUpdates() {
     fetch("/simulation-update")
       .then((response) => response.json())
       .then((data) => {
-        updateUI(data);
+        if (data.sim_game) {
+          updateUI(data);
+        }
         if (data.gameOver) {
           clearInterval(intervalId);
         }

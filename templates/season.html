@@ -47,5 +47,48 @@
         </li>
       </ul>
     </div>
+    <div class="pickTeams">
+      <h2>Team</h2>
+      <select id="team">
+        <option value="">Away Team</option>
+        <option value="ARI">Arizona Diamondbacks</option>
+        <option value="ATL">Atlanta Braves</option>
+        <option value="BAL">Baltimore Orioles</option>
+        <option value="BOS">Boston Red Sox</option>
+        <option value="CHC">Chicago Cubs</option>
+        <option value="CHW">Chicago White Sox</option>
+        <option value="CIN">Cincinnati Reds</option>
+        <option value="CLE">Cleveland Guardians</option>
+        <option value="COL">Colorado Rockies</option>
+        <option value="DET">Detroit Tigers</option>
+        <option value="HOU">Houston Astros</option>
+        <option value="KCR">Kansas City Royals</option>
+        <option value="LAA">Los Angeles Angels</option>
+        <option value="LAD">Los Angeles Dodgers</option>
+        <option value="MIA">Miami Marlins</option>
+        <option value="MIL">Milwaukee Brewers</option>
+        <option value="MIN">Minnesota Twins</option>
+        <option value="NYM">New York Mets</option>
+        <option value="NYY">New York Yankees</option>
+        <option value="OAK">Oakland Athletics</option>
+        <option value="PHI">Philadelphia Phillies</option>
+        <option value="PIT">Pittsburgh Pirates</option>
+        <option value="SDP">San Diego Padres</option>
+        <option value="SFG">San Francisco Giants</option>
+        <option value="SEA">Seattle Mariners</option>
+        <option value="STL">St. Louis Cardinals</option>
+        <option value="TBR">Tampa Bay Rays</option>
+        <option value="TEX">Texas Rangers</option>
+        <option value="TOR">Toronto Blue Jays</option>
+        <option value="WSN">Washington Nationals</option>
+      </select>
+    </div>
+    <ol id="lineup">
+      <!-- List items will be populated dynamically -->
+    </ol>
+    <div id="result"></div>
+    <button id="simulateSeason">Simulate Season</button>
+    <script src="{{ url_for('static', filename='seasonScript.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
   </body>
 </html>

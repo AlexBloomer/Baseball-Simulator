@@ -13,6 +13,21 @@ class Season:
         self.hittersPitches = pd.read_csv('Data/HittersPitches2024.csv') # REad hitters pitches csv
         self.pitchersPitches = pd.read_csv('Data/PitchersPitches2024.csv') # Read pitchers pitches csv
 
+    def getCurrentSimulationState(self):
+        #  Update the currentSimState variable with new information
+        # print("getting current pitcher")
+        currentSimState = {
+            'sim_game': False,
+            'end_sim': False,
+            'team': self.team.name,
+            'wins': self.wins,
+            'losses': self.losses
+        }
+        # print(f'{self.team.name}\n{self.wins}\n{self.losses}')
+        # print("returning simstate")
+        # returns the currentSimState after updating
+        return currentSimState
+
     def simSeason(self, update_callback, waitForNextBatter):
         schedule = pd.read_csv('Data/2024MLBSchedule.csv')
         name = getRealName(self.team.name)
@@ -41,6 +56,7 @@ class Season:
                 self.wins+=1
             else:
                 self.losses+=1
+            update_callback(self.getCurrentSimulationState())
             # print(str(winner.name))
-        # print(f'Wins: {self.wins}\nLosses: {self.losses}')
+        print(f'Wins: {self.wins}\nLosses: {self.losses}')
         return (self.wins, self.losses)

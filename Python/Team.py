@@ -41,6 +41,7 @@ class Team:
                 if row['Player'] == name:
                     if not filtered.empty:
                         pitchPerPA = filtered['Pit/PA'].values[0]
+                        print("Adding a playerr")
                     else:
                         print(f"No matching hitter found for {row['Player-additional']}.")
                         continue
