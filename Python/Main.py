@@ -93,17 +93,28 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
 
     return results
 
-def simulateSeason(team, update_callback, waitForNextBatter):
+def simulateSeason(team, numSims, update_callback, waitForNextBatter):
     season = Season(team)
-    # for i in range(10):
-    record = season.simSeason(update_callback, waitForNextBatter)
+    for i in range(numSims):
+        record = season.simSeason(update_callback, waitForNextBatter)
+        currentSimState = {
+            'sim_game': False,
+            'end_sim': True,
+            'team': team.name,
+            'wins': season.wins,
+            'losses': season.losses,
+            'average_wins': season.totalWins/(i+1),
+            'average_losses': season.totalLosses/(i+1)
+        }
+        update_callback(currentSimState)
     currentSimState = {
         'sim_game': False,
         'end_sim': True,
         'team': team.name,
-        'wins': record[0],
-        'losses': record[1]
+        'wins': season.wins,
+        'losses': season.losses,
+        'average_wins': season.totalWins/numSims,
+        'average_losses': season.totalLosses/numSims
     }
     update_callback(currentSimState)
-    # print(record)
     

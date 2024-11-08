@@ -50,7 +50,7 @@
     <div class="pickTeams">
       <h2>Team</h2>
       <select id="team">
-        <option value="">Away Team</option>
+        <option value="">Team</option>
         <option value="ARI">Arizona Diamondbacks</option>
         <option value="ATL">Atlanta Braves</option>
         <option value="BAL">Baltimore Orioles</option>
@@ -86,6 +86,15 @@
     <ol id="lineup">
       <!-- List items will be populated dynamically -->
     </ol>
+    <label for="numSimsInput">How many simulations do you want to run?:</label>
+    <input
+      type="number"
+      id="numSimsInput"
+      min="1"
+      max="100000"
+      step="1"
+      value="1"
+    />
     <div id="result"></div>
     <button id="simulateSeason">Simulate Season</button>
     <script src="{{ url_for('static', filename='seasonScript.js') }}"></script>

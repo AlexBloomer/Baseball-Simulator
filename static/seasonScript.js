@@ -1,8 +1,11 @@
 const simulateSeasonBtn = document.getElementById("simulateSeason");
 const teamSelect = document.getElementById("team");
 const lineupContainer = document.getElementById("lineup");
+const numSimsInput = document.getElementById("numSimsInput");
+
 selectedTeam = "";
 simEnded = true;
+let numSims = 1;
 
 teamSelect.addEventListener("change", () => {
   selectedTeam = teamSelect.value; // Update selected team1
@@ -37,6 +40,7 @@ simulateSeasonBtn.addEventListener("click", () => {
   userLineup = Array.from(document.querySelectorAll("#lineup li")).map(
     (li) => li.textContent
   );
+  numSims = numSimsInput.value;
   if (selectedTeam) {
     // Prepare the data to send
     // console.log(team1);
@@ -44,6 +48,7 @@ simulateSeasonBtn.addEventListener("click", () => {
     const data = {
       team: selectedTeam,
       lineup: userLineup,
+      numSims: numSims,
     };
 
     // Send the data to the Flask app
@@ -104,6 +109,8 @@ function updateUI(data) {
         Team: ${data.team}<br>
         Wins: ${data.wins}<br>
         Losses: ${data.losses}<br>
+        Average Wins: ${data.average_wins}<br>
+        Average Losses: ${data.average_losses}
     `;
   if (data.end_sim) {
     endsim();
@@ -114,5 +121,5 @@ function endsim() {
   fetch("/simulation-ended", {
     method: "POST",
   });
-  simEnded = true
+  simEnded = true;
 }

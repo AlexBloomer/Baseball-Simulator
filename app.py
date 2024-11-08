@@ -115,6 +115,7 @@ def simulateSeasonRoute():
     # JS input values
     teamInput = data.get('team')
     lineup = data.get('lineup')
+    numSims = int(data.get('numSims'))
 
     # Make teams
     teamHitters = hitters[hitters['Team'] == teamInput]
@@ -126,14 +127,14 @@ def simulateSeasonRoute():
     teamHittersPitches = hittersPitches[hittersPitches['Tm'] == teamInput]
     teamHittersPitches = teamHittersPitches[teamHittersPitches['PA'] > 0] # Make sure hitters have at least 1 plate appearance
     team = Team(teamInput)
-    print(f'filling lineup for: {teamInput}')
     team.fillLineup(teamHitters, lineup, teamHittersPitches)
     team.fillPitchingStaff(teamPitchers, teamPitchersPitches)
 
+    print(str(numSims))
     # Set runs and wins to zero for each team
 
     # Call Main.py function run_simulation from thread
-    thread = Thread(target=simulateSeason, args=(team, update_callback, wait_for_user_callback))
+    thread = Thread(target=simulateSeason, args=(team, numSims, update_callback, wait_for_user_callback))
     thread.start()
 
     # thread.join()
