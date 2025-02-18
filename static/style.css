@@ -109,7 +109,7 @@ body {
   /* transform: translateX(-10vw); */
   width: 10vw; /*viewport height*/
   height: 10vw;
-  margin-left: 20px;
+  /*margin-left: 10px;*/
   background-color: green; /* Grass color */
   border-radius: 50%;
 }
@@ -190,6 +190,7 @@ th {
 .playerText {
   margin-left: 10px;
   margin-right: 10px;
+  max-width: 100px;
 }
 
 #AwayPlayer {

@@ -377,7 +377,7 @@ function updateUI(data) {
         <p>${data.team1_name}: ${data.team1_runs}&nbsp;
         ${x} ${data.inning}&nbsp;
         ${data.team2_name}: ${data.team2_runs}</p>
-        <p>${data.resultString}</p>
+        <p <p style="min-height: 3em; white-space: pre-line;">${data.resultString}</p>
     `;
     document.getElementById("below").innerHTML = `
       <p>Outs: ${data.outs}</p>

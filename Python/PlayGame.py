@@ -95,7 +95,7 @@ class Game:
                 self.resultString = f'{hitter.name} hit a sacrifice fly' 
             case Result.SACRIFICE_HIT:
                 self.resultString = f'{hitter.name} hit a sacrifice bunt' 
-
+        print(self.resultString)
     # Returns True if batter got a hit(Single, double, triple, or homerun)
     # Returns False if batter didn't get a hit
     def isHit(self, result):
