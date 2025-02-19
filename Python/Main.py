@@ -41,7 +41,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         else:
             team2.wins += 1
         # Every 500 sims update JS with the information
-        if numSims < 3 or (i+1)%10 == 0:
+        if numSims < 10 or (i+1)%10 == 0:
             # update the currentSimState with the new information from the last 500 games
             currentSimState = {
                 'current_simulation_number': i+1,
