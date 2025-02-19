@@ -19,7 +19,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
     # Used for logging how long a sim takes
     lastTime = time.time()
     totTime = 0
-    print('A')
+    #print('A')
     
     # For loop which runs the number of sims
     for i in range(int(numSims)):
@@ -41,7 +41,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         else:
             team2.wins += 1
         # Every 500 sims update JS with the information
-        if numSims < 3 or (i+1)%500 == 0:
+        if numSims < 3 or (i+1)%10 == 0:
             # update the currentSimState with the new information from the last 500 games
             currentSimState = {
                 'current_simulation_number': i+1,
