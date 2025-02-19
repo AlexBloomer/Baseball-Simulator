@@ -407,6 +407,7 @@ function updateUI(data) {
     document.getElementById("wins").innerHTML = ``;
   }
   if (data.gameOver || numSims > 1) {
+    console.log("Updating text");
     document.getElementById("wins").innerHTML = `
               <h2>Results:</h2>
               <p>${data.team1_name} Wins: ${data.team1_wins}</p>

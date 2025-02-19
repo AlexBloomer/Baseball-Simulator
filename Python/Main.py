@@ -44,6 +44,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         if numSims < 10 or (i+1)%10 == 0:
             # update the currentSimState with the new information from the last 500 games
             currentSimState = {
+                'sim_game': True,
                 'current_simulation_number': i+1,
                 'team1_total_runs': team1.totalRuns,
                 'team2_total_runs': team2.totalRuns,
