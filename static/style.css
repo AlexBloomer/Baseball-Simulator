@@ -25,7 +25,8 @@ body {
   position: absolute;
   left: 50%;
   transform: translate(-50%);
-  font-size: 50px;
+  /* font-size: 50px; */
+  font-size: 2vw;
   /* text-align: center; */
   justify-content: center;
   flex-grow: 1;
