@@ -2,15 +2,15 @@ from enum import Enum
 
 # Postition Enum
 class Position(Enum):
-    DH = "Designated Hitter"
-    CATCHER = "Catcher"
-    FIRST_BASE = "First Base"
-    SECOND_BASE = "Second Base"
-    THIRD_BASE = "Third Base"
-    SHORTSTOP = "Shortstop"
-    CENTER_FIELD = "Center Field"
-    RIGHT_FIELD = "Right Field"
-    LEFT_FIELD = "Left Field"
+    DH = "DH"
+    CATCHER = "C"
+    FIRST_BASE = "1B"
+    SECOND_BASE = "2B"
+    THIRD_BASE = "3B"
+    SHORTSTOP = "SS"
+    CENTER_FIELD = "CF"
+    RIGHT_FIELD = "RF"
+    LEFT_FIELD = "LF"
 
 # Result Enum
 class Result(Enum):

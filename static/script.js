@@ -18,6 +18,18 @@ const lineupContainer2 = document.getElementById("lineup2");
 const simNotRunning = document.querySelectorAll(".simNotRunning");
 const simRunning = document.querySelectorAll(".simRunning");
 const lineupsHtml = document.querySelector(".lineups");
+// ---- NEW: bridge old IDs to the new UI ----
+const scoreLineEl  = document.getElementById('scoreLine') 
+const playResultEl = document.getElementById('playResult') 
+                   || document.getElementById('result') 
+                   || document.querySelector('.result');
+
+const outsEl = document.querySelector('.outs')
+const awayPlayerEl = document.getElementById('awayPlayer') 
+const homePlayerEl= document.getElementById('homePlayer') 
+const outsDotsEl = document.getElementById('outsDots');
+
+
 lineupsHtml.classList.add("hidden");
 let simEnded = false;
 const tableBody1 = document
@@ -60,6 +72,25 @@ team2Select.addEventListener("change", () => {
     }); // Assuming the response gives an array of players
 });
 
+function ensureRows(tbody, rowCount, colCount) {
+  // add rows if missing
+  while (tbody.rows.length < rowCount) {
+    const tr = tbody.insertRow();
+    for (let i = 0; i < colCount; i++) tr.insertCell();
+  }
+  // trim extra rows (fresh sim)
+  while (tbody.rows.length > rowCount) {
+    tbody.deleteRow(-1);
+  }
+}
+
+// convenience: count columns from the table header
+function getColCount(tableId) {
+  const thead = document.querySelector(`#${tableId} thead tr`);
+  return thead ? thead.children.length : 0;
+}
+
+
 function populateLineup1(players) {
   // Clear the list
   lineupContainer1.innerHTML = "";
@@ -96,27 +127,47 @@ function populateLineup2(players) {
 }
 
 function getUserLineup1() {
-  // console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOO");
-  // console.log(
-  //   Array.from(document.querySelectorAll("#lineup1 li")).map(
-  //     (li) => li.textContent
-  //   )
-  // );
-
   return Array.from(document.querySelectorAll("#lineup1 li")).map(
     (li) => li.textContent
   );
 }
 function getUserLineup2() {
-  // console.log(
-  //   Array.from(document.querySelectorAll("#lineup2 li")).map(
-  //     (li) => li.textContent
-  //   )
-  // );
   return Array.from(document.querySelectorAll("#lineup2 li")).map(
     (li) => li.textContent
   );
 }
+
+function updateBoxScoreRows(data){
+  if (!boxScoreTable) return;
+
+  let row = boxScoreTable.rows[0];
+  if (row){
+    row.cells[0].textContent = data.team1_box_score["Team"];
+    for (let i = 1; i <= 9; i++) row.cells[i].textContent = data.team1_box_score[String(i)];
+    row.cells[10].textContent = data.team1_box_score["R"];
+    row.cells[11].textContent = data.team1_box_score["H"];
+    row.cells[12].textContent = data.team1_box_score["E"];
+  }
+
+  row = boxScoreTable.rows[1];
+  if (row){
+    row.cells[0].textContent = data.team2_box_score["Team"];
+    for (let i = 1; i <= 9; i++) row.cells[i].textContent = data.team2_box_score[String(i)];
+    row.cells[10].textContent = data.team2_box_score["R"];
+    row.cells[11].textContent = data.team2_box_score["H"];
+    row.cells[12].textContent = data.team2_box_score["E"];
+  }
+}
+
+function renderOuts(outs = 0){
+  if (!outsDotsEl) return;
+  const dots = outsDotsEl.querySelectorAll('.dot');
+  dots.forEach((dot, i) => dot.classList.toggle('on', i < outs));
+  outsDotsEl.setAttribute('aria-label', `Outs: ${outs}`);
+  console.log(outs);
+}
+
+
 
 function simulation_update() {
   // Fetch data from the server
@@ -207,11 +258,11 @@ runSimulationBtn.addEventListener("click", () => {
         console.error("Error:", error);
       });
   } else {
-    // Display a message if teams are not selected
-    document.getElementById(
-      "result"
-    ).innerHTML = `<p>Please select both teams before running the simulation.</p>`;
-  }
+      // Display a message if teams are not selected
+      const msgTarget = playResultEl || scoreLineEl;
+      if (msgTarget) msgTarget.textContent = 'Please select both teams before running the simulation.';
+
+    }
 });
 
 function fetchUpdates() {
@@ -272,6 +323,14 @@ function updateUI(data) {
     simEnded = false;
   }
   if (!data.gameOver && numSims < 3) {
+    const cols1 = getColCount('playerTable1');   // should be 10 if you keep AVG & OPS
+    const cols2 = getColCount('playerTable2');
+
+    const rows1 = data.team1_hitters_results?.length || 0;
+    const rows2 = data.team2_hitters_results?.length || 0;
+
+    ensureRows(tableBody1, rows1, cols1);
+    ensureRows(tableBody2, rows2, cols2);
     data.team1_hitters_names.forEach((name, index) => {
       const row = tableBody1.rows[index];
       if (row) {
@@ -363,49 +422,61 @@ function updateUI(data) {
   }
   // console.log(data.gameOver);
   if (data.gameOver) {
+    renderOuts(0);
     document.getElementById("first-base").style.backgroundColor = "lightblue";
     document.getElementById("second-base").style.backgroundColor = "lightblue";
     document.getElementById("third-base").style.backgroundColor = "lightblue";
     console.log("over");
     // document.getElementById(
-    //   "simulationState"
-    // ).innerHTML = `<p>Simulation Finished</p>`;
-    simulationEnded();
-  } else if (numSims <= 2) {
-    // document.getElementById("results").innerHTML = `
-    document.getElementById("result").innerHTML = `
-        <p>${data.team1_name}: ${data.team1_runs}&nbsp;
-        ${x} ${data.inning}&nbsp;
-        ${data.team2_name}: ${data.team2_runs}</p>
-        <p style="min-height: 3em; white-space: pre-line;">${data.resultString}</p>
-    `;
-    document.getElementById("below").innerHTML = `
-      <p>Outs: ${data.outs}</p>
-      <p style="min-height: 7em; white-space: pre-line;">${runnerString}</p>
-    `;
-    // console.log(document.getElementById("below").offsetHeight);
-    if (data.topInning) {
-      document.getElementById("AwayPlayer").innerHTML = `
-        <p>Hitter: ${data.hitter}<br>
-        On Deck: ${data.onDeckHitter}</p>
-      `;
-      console.log(data.pitcher);
-      document.getElementById("HomePlayer").innerHTML = `
-        <p>${data.pitcher}</p>
-      `;
-    } else {
-      document.getElementById("HomePlayer").innerHTML = `
-        <p>Hitter: ${data.hitter}<br>
-        On Deck: ${data.onDeckHitter}</p>
-      `;
-      document.getElementById("AwayPlayer").innerHTML = `
-        <p>${data.pitcher}</p>
-      `;
-    }
-    //     <p>Pitcher: ${data.pitcher}</p>
-    //   `;
-    document.getElementById("wins").innerHTML = ``;
+      //   "simulationState"
+      // ).innerHTML = `<p>Simulation Finished</p>`;
+      simulationEnded();
+    } else if (numSims <= 2) {
+      if (playResultEl) playResultEl.textContent = data.resultString || "";
+      const half = data.topInning ? "top" : "bot";
+      const scoreText = `${data.team1_name}: ${data.team1_runs}  ${half} ${data.inning}  ${data.team2_name}: ${data.team2_runs}`;
+      if (scoreLineEl){
+        if (scoreLineEl.id === 'scoreLine'){
+          scoreLineEl.textContent = scoreText;
+        } else {
+          scoreLineEl.innerHTML = `
+            <p>${scoreText}</p>
+          `;
+        }
+      }
+
+      // --- outs & runners (new .outs or old #below) ---
+      if (outsEl){
+        if (outsEl.classList && outsEl.classList.contains('outs')){
+          // console.log("hello");
+          // renderOuts(data.outs);
+          // outsEl.textContent = `Outs: ${data.outs}`;
+          // If you have a separate runners area, update it here too (e.g. #runners)
+          const runnersEl = document.getElementById('runners');
+          if (runnersEl) runnersEl.innerHTML = runnerString;
+        } else {
+          outsEl.innerHTML = `
+            <p>Outs: ${data.outs}</p>
+            <p style="min-height: 7em; white-space: pre-line;">${runnerString}</p>
+          `;
+        }
+      }
+
+      // --- hitter & pitcher cards (new #hitterInfo/#pitcherInfo or old #AwayPlayer/#HomePlayer) ---
+      if (data.topInning){
+        if (awayPlayerEl) awayPlayerEl.innerHTML = `${data.hitter}`;
+        // if (hitterInfoEl) hitterInfoEl.innerHTML = `Hitter: ${data.hitter}<br>On Deck: ${data.onDeckHitter}`;
+        if (homePlayerEl) homePlayerEl.innerHTML = `${data.pitcher}`;
+      } else {
+        // if (hitterInfoEl) hitterInfoEl.innerHTML = `Hitter: ${data.hitter}<br>On Deck: ${data.onDeckHitter}`;
+        if (awayPlayerEl) awayPlayerEl.innerHTML = `${data.pitcher}`;
+        if (homePlayerEl) homePlayerEl.innerHTML = `${data.hitter}`;
+      }
+      renderOuts(data.outs);
+      document.getElementById("wins").innerHTML = ``;
   }
+  updateBoxScoreRows(data);
+
   if (data.gameOver || numSims > 1) {
     console.log("Updating text");
     document.getElementById("wins").innerHTML = `

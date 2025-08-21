@@ -148,20 +148,19 @@
         value="1"
       />
     </div>
-    <div class="buttons">
-      <button class="simNotRunning" id="runSimulation">Run Simulation</button>
-    </div>
-    <div class="buttons">
-      <button class="simRunning" id="continue">Next Batter</button>
-    </div>
-    <div class="buttons">
-      <button id="nextSim">Next Simulation</button>
-    </div>
-    <div id="wins"></div>
-    <div class="simRunning">
-      <div class="fieldTable">
-        <div class="Left">
-          <div class="statsTable">
+    <div class="container">
+      <div class="buttons">
+        <button class="simNotRunning" id="runSimulation">Run Simulation</button>
+      </div>
+      <div class="buttons">
+        <button id="nextSim">Next Simulation</button>
+      </div>
+      <div id="wins"></div>
+      <div class="simRunning">
+        <!-- Main game layout -->
+        <div class="gameLayout">
+          <!-- Away lineup -->
+          <div class="lineupTable">
             <table id="playerTable1">
               <thead>
                 <tr>
@@ -178,132 +177,46 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                <!-- rows dynamically filled -->
               </tbody>
             </table>
           </div>
-          <div class="playerText" id="AwayPlayer"></div>
-        </div>
-        <div class="Center">
-          <div id="result" style="max-width: 150px"></div>
-          <div class="field">
-            <div class="diamond home" id="home"></div>
-            <div class="diamond first-base" id="first-base"></div>
-            <div class="diamond second-base" id="second-base"></div>
-            <div class="diamond third-base" id="third-base"></div>
+
+          <!-- Center panel (field + controls + info) -->
+          <div class="centerPanel">
+            <!-- <button id="continue">Next Batter</button> -->
+            <div id="scoreLine">COL: 0 top 1 KCR: 0</div>
+
+            <!-- Field (diamond graphic) -->
+            <div class="field">
+              <div class="diamond home" id="home"></div>
+              <div class="diamond first-base" id="first-base"></div>
+              <div class="diamond second-base" id="second-base"></div>
+              <div class="diamond third-base" id="third-base"></div>
+            </div>
+            <div id="playResult" class="result" role="status" aria-live="polite"></div>
+            <div class="outs">
+              <div id="outsDots" class="outsDots" aria-live="polite" aria-label="Outs: 0">
+                <span class="dot" aria-hidden="true"></span>
+                <span class="dot" aria-hidden="true"></span>
+                <span class="dot" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <!-- Info cards -->
+            <div class="infoRow">
+              <div class="infoCard" id="awayPlayer">
+                Hitter:
+              </div>
+              <div class="infoCard" id="homePlayer">
+                Pitcher:
+              </div>
+            </div>
+            <button id="continue">Next Batter</button>
           </div>
-          <div id="below" style="max-width: 150px"></div>
-        </div>
-        <div class="Right">
-          <div class="playerText" id="HomePlayer"></div>
-          <div class="statsTable">
+
+          <!-- Home lineup -->
+          <div class="lineupTable">
             <table id="playerTable2">
               <thead>
                 <tr>
@@ -320,172 +233,50 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                <!-- rows dynamically filled -->
               </tbody>
             </table>
           </div>
         </div>
-      </div>
-      <div>
+
+        <!-- Box score at bottom -->
         <table id="boxScore">
           <thead>
-            <th></th>
-            <th>1</th>
-            <th>2</th>
-            <th>3</th>
-            <th>4</th>
-            <th>5</th>
-            <th>6</th>
-            <th>7</th>
-            <th>8</th>
-            <th>9</th>
-            <th>R</th>
-            <th>H</th>
-            <th>E</th>
+            <tr>
+              <th></th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+              <th>6</th>
+              <th>7</th>
+              <th>8</th>
+              <th>9</th>
+              <th>R</th>
+              <th>H</th>
+              <th>E</th>
+            </tr>
           </thead>
           <tbody>
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>COL</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
             </tr>
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>KCR</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
   </body>
 </html>

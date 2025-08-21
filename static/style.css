@@ -1,267 +1,344 @@
+:root { 
+  --background-color: #e6e6e6;
+  --bar-color: navy;
+
+  /* new theme tokens */
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #d1d5db;
+  --blue: #0a2342;   /* matches left of topbar */
+  --red: #8b0000;        /* matches right of topbar */
+  --radius: 14px;
+  --shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+/* -------- Global layout -------- */
+html, body { 
+  height: 100%; 
+  align-items: center;
+}
 body {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 100vh;
   margin: 0;
-  background-color: rgb(196, 160, 254);
-  box-sizing: border-box;
-  /* position: relative; */
+  background-color: var(--background-color);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* -------- TOP BAR -------- */
 .TopBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
   height: 70px;
-  background-color: rgb(147, 147, 255);
-  top: 0;
+  background: linear-gradient(90deg, var(--blue), var(--red));
   color: white;
-  margin-bottom: 20px;
   width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  margin-bottom: 16px;
 }
 
+/* center the title without absolute positioning */
 .Title {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  /* font-size: 50px; */
-  font-size: 2vw;
-  /* text-align: center; */
-  justify-content: center;
-  flex-grow: 1;
-  /* flex: 1; */
+  margin: 0 auto;
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-weight: 800;
 }
 
-.navList {
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  padding: 0;
-  /* margin: 0; */
-  list-style-type: none;
+/* nav links/icons */
+header a, .TopBar a {
+  color: #f0f0f0; text-decoration: none; font-weight: 600;
 }
+header a:hover, .TopBar a:hover { color: #ffd700; }
+.navList, .linkList { display:flex; align-items:center; gap:14px; margin:0 10px; padding:0; list-style:none; }
+.linkList img { border-radius: 10%; }
+.linkList img:hover{scale: 1.1;}
 
-.linkList {
-  display: flex;
-  align-items: center;
-  /* flex: 1; */
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-  margin-left: auto;
-  margin-right: 5px;
-}
+/* -------- END TOP BAR -------- */
 
-.linkList li {
-  margin-left: 15px;
+/* -------- SIMULATION SETUP -------- */
+/* -------- Picking Teams -------- */
+.pickTeams { 
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px; 
+  justify-content: center; margin-bottom: 18px;
 }
+.pickAwayTeam, .pickHomeTeam {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+  padding: 14px;
+}
+.pickAwayTeam h2, .pickHomeTeam h2 { margin: 0 0 8px; }
 
-.linkList img {
-  /* flex-grow: 1; */
-  /* width: 50px;
-  height: 50px; */
-  border-radius: 10%;
-  /* margin-left: 10px; */
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+select {
+  width: 100%;
+  appearance: none;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 16px;
+  outline: none;
 }
+select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,0,0,.15); }
 
-.pickTeams {
-  display: flex;
-  justify-content: center;
-}
 
-.pickAwayTeam {
-  margin-right: 20px;
-  padding: 5px 5px 10px 5px;
-  border: 3px solid navy;
-}
-.pickHomeTeam {
-  margin-right: 20px;
-  padding: 5px 5px 10px 5px;
-  border: 3px solid navy;
-}
+/* -------- Setting lineups -------- */
+#lineupHeader { margin: 10px 0 10px; }
 
 .lineups {
-  display: inline-flex;
-  justify-content: center;
-  border: 3px solid navy;
-  background-color: rgb(147, 147, 255);
-  color: white;
-  border-radius: 10%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
 .lineups ol {
-  padding: 10px 10px 10px 10px;
-  flex: 0 0 auto; /* This makes each <ol> take up only the width it needs */
-  margin: 0 10px;
-  margin-left: 20px;
+  list-style: none; margin:0; padding:0;
+  max-height: 460px; overflow: auto;
+  border-right: 1px solid var(--border);
+}
+.lineups ol:last-child { border-right: none; }
+
+.lineups li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+  font-size: 15px;
+  transition: background .15s ease, transform .05s ease;
+}
+.lineups li:nth-child(odd){ background:#fcfcff; }
+.lineups li:hover { background:#f7f7ff; }
+
+/* number badge (if you add one in JS) */
+.lineups li .badge {
+  min-width:22px; height:22px; border-radius:999px;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:12px; color:#fff; background: var(--blue);
 }
 
-.hidden {
-  display: none;
+/* class you can toggle while dragging */
+.lineups li.dragging { background: #f0e7ea; transform: scale(1.01); border-left: 4px solid var(--accent); }
+
+/* -------- Controls / buttons -------- */
+.simNotRunning, .buttons { text-align:center; }
+
+
+#numSimsInput {
+  margin-top: 8px;
+  width: 170px;
+  padding: 8px 10px;
+  font-size: 15px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none; background:#fff;
+}
+#numSimsInput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,0,0,.15); }
+
+#continue, #runSimulation, #nextSim {
+  margin-top: 15px;
+  min-width: 160px; height: 40px;
+  border-radius: 10px;
+  background-color: var(--blue);
+  color: white; border: none;
+  font-weight: 600; cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .06s ease, background .15s ease, opacity .15s ease;
+}
+#continue:hover, #runSimulation:hover, #nextSim:hover { background: var(--accent); }
+#continue:active, #runSimulation:active, #nextSim:active { transform: translateY(1px); }
+#continue:disabled, #runSimulation:disabled, #nextSim:disabled { opacity:.6; cursor:not-allowed; }
+
+/* -------- END SIMULATION SETUP -------- */
+
+
+/* SIMULATION RUNNING */
+/* page container wraps all the items when a simulation is running*/
+.container {
+  margin: 14px auto 0px;
+  padding: 0 20px;
 }
 
-.field {
-  position: relative;
-  /* left: 50%; */
-  /* transform: translateX(-10vw); */
-  width: 10vw; /*viewport height*/
-  height: 10vw;
-  /*margin-left: 10px;*/
-  background-color: green; /* Grass color */
-  border-radius: 50%;
-}
 
-.diamond {
-  position: absolute;
-  width: 15%; /* Width of the diamond */
-  height: 15%; /* Height of the diamond */
-  background-color: lightblue; /* Color of the diamond */
-  transform: rotate(45deg); /* Rotate to make it diamond-shaped */
-  /* Center the diamonds based on their width and height */
-  transform-origin: center center; /* Set origin for rotation */
-}
-
-.home {
-  top: 70%; /* Position for home plate (bottom center) */
-  left: 50%; /* Centered horizontally */
-  transform: translate(-50%, 50%) rotate(45deg); /* Center horizontally and rotate */
-}
-
-.first-base {
-  top: 50%; /* Centered vertically */
-  left: 95%; /* Position it to the right of the field */
-  transform: translate(-100%, -50%) rotate(45deg); /* Center vertically and rotate */
-}
-
-.second-base {
-  top: 5%; /* Position for second base (top center) */
-  left: 50%; /* Centered horizontally */
-  transform: translate(-50%, 0) rotate(45deg); /* Center horizontally and rotate */
-}
-
-.third-base {
-  top: 50%; /* Centered vertically */
-  left: 5%; /* Position for third base (left center) */
-  transform: translate(0, -50%) rotate(45deg); /* Center vertically and rotate */
-}
-
+/* -------- Field & middle panel -------- */
 .fieldTable {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 16px;
   width: 100%;
   margin-top: 20px;
 }
 
-.statsTable {
-  margin-bottom: 10px;
-  /* border-collapse: collapse; */
-  /* width: 40%; */
-  /* margin-left: 10px;
-  margin-right: 10px; */
-  /* border: 5px solid black; */
-}
+.statsTable { margin-bottom: 10px; }
 
-.statsTable td {
-  border: 1px solid #ccc; /* Add borders for cells */
-  padding: 8px; /* Add padding for better spacing */
-  text-align: center; /* Center align text */
-}
-
+/* -------- Tables (player & box score) -------- */
 table {
-  /* border: 5px solid black; */
-  width: 100%;
-  border-collapse: collapse;
+  width:100%; border-collapse: collapse; background:#fff;
+  border:1px solid var(--border); border-radius: 10px; overflow:hidden;
+  box-shadow: var(--shadow);
+}
+th, td { padding: 8px 10px; text-align: center; font-size: 14px; }
+thead th {
+  position: sticky; top: 0;
+  background: #f8fafc; color: #111827; z-index: 1;
+  border-bottom: 1px solid var(--border);
+}
+tbody tr:nth-child(odd){ background:#fcfcff; }
+
+/* player name cells can be wider */
+.playerText { max-width: none; }
+
+/* layout columns */
+.Left, .Right { display: flex; flex-direction: column; gap: 10px; }
+.Center { display:flex; flex-direction: column; align-items:center; gap:10px; }
+
+/* #boxScore { width: 98%; margin: 14px auto 0; } */
+
+/* Hidden toggles */
+.hidden { display:none; }
+
+/* -------- Responsive -------- */
+@media (max-width: 900px){
+  .pickTeams { grid-template-columns: 1fr; }
+  .fieldTable { grid-template-columns: 1fr; }
+  .lineups { grid-template-columns: 1fr; }
+  .Title { font-size: clamp(20px, 5vw, 30px); }
 }
 
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: center;
-  padding: 8px;
-}
-th {
-  background-color: #f2f2f2;
-}
-
-.playerText {
-  margin-left: 10px;
-  margin-right: 10px;
-  max-width: 100px;
+/* --- Game layout container --- */
+.gameLayout {
+  display: grid;
+  grid-template-columns: 1fr 300px 1fr;
+  gap: 24px;
+  align-items: start;
+  margin: 20px auto;
+  padding: 0   20px;
 }
 
-#AwayPlayer {
-  text-align: right;
-}
-#HomePlayer {
-  text-align: left;
-}
-
-.Left,
-.Right {
-  flex: 1;
+.lineupTable {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
   padding: 10px;
 }
 
-.Center {
+/* Center panel */
+.centerPanel {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  gap: 16px;
+  padding: 10px;
 }
 
-.Left,
-.Right {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-#below {
-  min-height: 120px;
-}
-
-/* #continue {
-  margin-top: 15px;
-  width: 100px;
-  height: 75px;
-  border-radius: 10%;
-  background-color: rgb(147, 147, 255);
-  color: white;
-} */
 #continue {
-  margin-top: 15px;
-  width: 150px;
-  height: 35px;
-  border-radius: 10%;
-  background-color: rgb(147, 147, 255);
-  color: white;
+  margin: 0;
 }
-#runSimulation {
-  margin-top: 15px;
-  width: 150px;
-  height: 35px;
-  border-radius: 15%;
-  background-color: rgb(147, 147, 255);
-  color: white;
+
+.field {
+  width: 180px;
+  height: 180px;
 }
-#nextSim {
-  margin-top: 15px;
-  width: 150px;
-  height: 35px;
-  border-radius: 15%;
-  background-color: rgb(147, 147, 255);
-  color: white;
+
+/* Hitter + Pitcher info boxes */
+.infoRow {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  min-width: 100%;
+  min-height: 17vh;
+}
+
+.infoCard {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  min-width: 120;
+  min-height: 150;
 }
 
 #boxScore {
-  width: 98%;
-  margin-left: 1%;
-  /* margin-right: 10px; */
-  align-items: center;
-  justify-content: center;
+  margin: 15px auto 0;
+  max-width: 800px;
 }
+
+#scoreLine {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+
+/* Baseball field */
+.field{
+  position: relative;                
+  width: clamp(180px, 22vw, 240px);
+  height: clamp(180px, 22vw, 240px);
+  background: #0b5a18;
+  border-radius: 50%;
+  border: 2px solid #0a4512;
+  box-shadow: var(--shadow);
+}
+
+/* Base diamonds */
+.diamond{
+  position: absolute;                 
+  width: 15%;                        
+  height: 15%;
+  background: #e9f6ff;
+  transform: rotate(45deg);
+  transform-origin: center center;
+  border-radius: 2px;
+}
+
+.home{ top:70%; left:50%; transform: translate(-50%, 50%) rotate(45deg); }
+.first-base{ top:50%; left:95%; transform: translate(-100%, -50%) rotate(45deg); }
+.second-base{ top:5%; left:50%; transform: translate(-50%, 0) rotate(45deg); }
+.third-base{ top:50%; left:5%; transform: translate(0, -50%) rotate(45deg); }
+
+
+/* make grid items stretch to same height */
+.gameLayout { align-items: stretch; }
+
+/* lineup card fills available height */
+.lineupTable{
+  display: flex;
+  flex-direction: column;
+}
+
+.lineupTable > table{
+  flex: 1;
+  min-height: 0;   
+}
+
+.outsDots{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px; margin-top:6px; font-weight:700; color:#374151;
+}
+.outsDots .label{ font-size:13px; }
+.outsDots .dot{
+  width:20px; height:20px; border-radius:50%;
+  border:1.5px solid var(--border); background:#fff;
+  box-shadow:0 1px 0 rgba(0,0,0,.05);
+}
+.outsDots .dot.on{ background:yellow; border-color:yellow; }
+
+

@@ -21,10 +21,14 @@ team2 = None # Home TEam
 team = None # Sim Season Team
 
 # CSV files
-hitters = pd.read_csv('Data/Hitters2024.csv') # Read hitters csv
-pitchers = pd.read_csv('Data/Pitchers2024.csv') # Read pitchers csv
-hittersPitches = pd.read_csv('Data/HittersPitches2024.csv') # REad hitters pitches csv
-pitchersPitches = pd.read_csv('Data/PitchersPitches2024.csv') # Read pitchers pitches csv
+hitters = pd.read_csv('Data/Hitters2025.csv') # Read hitters csv
+pitchers = pd.read_csv('Data/Pitchers2025.csv') # Read pitchers csv
+hittersPitches = pd.read_csv('Data/HittersPitches2025.csv') # REad hitters pitches csv
+pitchersPitches = pd.read_csv('Data/PitchersPitches2025.csv') # Read pitchers pitches csv
+# hitters = pd.read_csv('Data/Hitters2024.csv') # Read hitters csv
+# pitchers = pd.read_csv('Data/Pitchers2024.csv') # Read pitchers csv
+# hittersPitches = pd.read_csv('Data/HittersPitches2024.csv') # REad hitters pitches csv
+# pitchersPitches = pd.read_csv('Data/PitchersPitches2024.csv') # Read pitchers pitches csv
 
 #  Route for the root URL
 @app.route('/')
