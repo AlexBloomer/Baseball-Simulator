@@ -4,7 +4,7 @@ class Bases:
         self.runners = {}  # Use a dictionary to store runners
 
     def clearBases(self):
-        self.runners.clear()  # Clear all runners
+      self.runners.clear()  # Clear all runners
 
     def hit(self, player, base):
         runs = self.advanceBases(base, False, False)

@@ -90,6 +90,44 @@ function getColCount(tableId) {
   return thead ? thead.children.length : 0;
 }
 
+function ensureTotalsRow() {
+  // 13 columns: Team, innings 1–9, R, H, E
+  if (boxScoreTable.rows.length < 3) {
+    const tr = boxScoreTable.insertRow();
+    tr.id = 'totalsRow';
+    for (let i = 0; i < 13; i++) tr.insertCell();
+  }
+  return boxScoreTable.rows[2];
+}
+
+function toNum(v) {
+  // robust: handle "", null, "-", undefined
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function updateBoxScoreTotals(data) {
+  const trow = ensureTotalsRow();
+  trow.cells[0].textContent = 'TOT';
+
+  // per-inning totals (1..9)
+  for (let i = 1; i <= 9; i++) {
+    const iStr = String(i);
+    const sum = toNum(data.team1_box_score[iStr]) + toNum(data.team2_box_score[iStr]);
+    trow.cells[i].textContent = sum;
+  }
+
+  // R / H / E totals
+  const rTot = toNum(data.team1_box_score.R) + toNum(data.team2_box_score.R);
+  const hTot = toNum(data.team1_box_score.H) + toNum(data.team2_box_score.H);
+  const eTot = toNum(data.team1_box_score.E) + toNum(data.team2_box_score.E);
+
+  trow.cells[10].textContent = rTot;
+  trow.cells[11].textContent = hTot;
+  trow.cells[12].textContent = eTot;
+}
+
+
 
 function populateLineup1(players) {
   // Clear the list
@@ -157,6 +195,8 @@ function updateBoxScoreRows(data){
     row.cells[11].textContent = data.team2_box_score["H"];
     row.cells[12].textContent = data.team2_box_score["E"];
   }
+
+  // updateBoxScoreTotals(data);
 }
 
 function renderOuts(outs = 0){
@@ -501,3 +541,4 @@ function openSeasonPage() {
     method: "POST",
   });
 }
+
