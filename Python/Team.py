@@ -116,11 +116,12 @@ class Team:
 
 
     def setCurrentPitcher(self, inning, outs, scoreDif):
+        print("setting pitcher")
         if(inning == 1 and outs == 0 or self.curPitcher == None):
             self.curPitcher = self.weighted_choice(self.rotation, self.starterWeights)
             self.curPitcher.gamesSim += 1
             self.numStarters += 1
-        elif(inning < 9 or abs(scoreDif) > 3 or self.curPitcher.pitchType == PitcherType.CLOSER):
+        elif(inning < 9 or abs(scoreDif) > 3 or self.curPitcher.pitchType == PitcherType.CLOSER) or not self.closer:
             self.curPitcher = self.weighted_choice(self.relievers, self.relieverWeights)
             self.curPitcher.gamesSim +=1
         else:

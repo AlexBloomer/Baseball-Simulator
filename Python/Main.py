@@ -23,6 +23,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
     
     # For loop which runs the number of sims
     for i in range(int(numSims)):
+        print(i)
         # Log how long every 1000 sims takes
         if((i+1)%1000 == 0):
             totTime += time.time() - lastTime

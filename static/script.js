@@ -514,8 +514,8 @@ function updateUI(data) {
       }
       renderOuts(data.outs);
       document.getElementById("wins").innerHTML = ``;
+      updateBoxScoreRows(data);
   }
-  updateBoxScoreRows(data);
 
   if (data.gameOver || numSims > 1) {
     console.log("Updating text");

@@ -71,9 +71,9 @@ def simulateGamesRoute():
     team2Hitters = hitters[hitters['Team'] == team2Input]
     team2Hitters = team2Hitters[team2Hitters['PA'] > 0] # Make sure hitters have at least 1 plate appearance
     team1Pitchers = pitchers[pitchers['Team'] == team1Input]
-    team1Pitchers = team1Pitchers[team1Pitchers['BF'] > 20] # Make sure pitchers have at least 20 batters faced
+    team1Pitchers = team1Pitchers[team1Pitchers['BF'] > 120] # Make sure pitchers have at least 20 batters faced
     team2Pitchers = pitchers[pitchers['Team'] == team2Input]
-    team2Pitchers = team2Pitchers[team2Pitchers['BF'] > 20] # Make sure pitchers have at least 20 batters faced
+    team2Pitchers = team2Pitchers[team2Pitchers['BF'] > 120] # Make sure pitchers have at least 20 batters faced
     team1PitchersPitches = pitchersPitches[pitchersPitches['Tm'] == team1Input]
     team1PitchersPitches = team1PitchersPitches[team1PitchersPitches['PA'] > 0] # Make sure hitters have at least 1 plate appearance
     team2PitchersPitches = pitchersPitches[pitchersPitches['Tm'] == team2Input]
@@ -125,7 +125,7 @@ def simulateSeasonRoute():
     teamHitters = hitters[hitters['Team'] == teamInput]
     teamHitters = teamHitters[teamHitters['PA'] > 0] # Make sure hitters have at least 1 plate appearance
     teamPitchers = pitchers[pitchers['Team'] == teamInput]
-    teamPitchers = teamPitchers[teamPitchers['BF'] > 120] # Make sure pitchers have at least 20 batters faced
+    teamPitchers = teamPitchers[teamPitchers['BF'] > 120] # Make sure pitchers have at least 120 batters faced
     teamPitchersPitches = pitchersPitches[pitchersPitches['Tm'] == teamInput]
     teamPitchersPitches = teamPitchersPitches[teamPitchersPitches['PA'] > 0] # Make sure hitters have at least 1 plate appearance
     teamHittersPitches = hittersPitches[hittersPitches['Tm'] == teamInput]
