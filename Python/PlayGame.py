@@ -111,8 +111,8 @@ class Game:
                 The result of the at bat which is a Result enum (ex. Result.SINGLE)
         """
         # hitter and pitcher's stats are weighted equally
-        hitterWeight = .5
-        pitcherWeight = .5
+        hitterWeight = .75
+        pitcherWeight = .25
         # get the current hitter and pitcher
         hitter = hittingTeam.getCurrentBatter()
         pitcher = pitchingTeam.getCurrentPitcher()      
@@ -202,6 +202,7 @@ class Game:
             return Result.SACRIFICE_FLY
         else:
             return Result.OUT
+    
 
     # Play half of an inning
     def playHalf(self, hittingTeam, pitchingTeam, update_callback, waitForNextBatter):

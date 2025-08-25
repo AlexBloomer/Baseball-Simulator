@@ -396,4 +396,36 @@ tbody tr:nth-child(odd){ background:#fcfcff; }
   font-variant-numeric: tabular-nums;  /* makes numbers line up neatly */
 }
 
+#finalStats {
+  margin: 18px auto;
+  max-width: 1100px;
+}
+#finalStats .card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+#finalStats table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#finalStats th, #finalStats td {
+  padding: 6px 8px;
+  text-align: center;
+  border-bottom: 1px solid #eef0f3;
+  white-space: nowrap;
+}
+#finalStats thead th {
+  background:#f8fafc;
+  position: sticky; top: 0;
+}
+#finalStats h3 {
+  margin: 6px 0 10px;
+}
+
+
 

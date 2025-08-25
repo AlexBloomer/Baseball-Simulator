@@ -16,6 +16,7 @@ const continueBtn = document.getElementById("continue");
 const lineupContainer1 = document.getElementById("lineup1");
 const lineupContainer2 = document.getElementById("lineup2");
 const simNotRunning = document.querySelectorAll(".simNotRunning");
+const statCards = document.querySelectorAll(".statCards");
 const simRunning = document.querySelectorAll(".simRunning");
 const lineupsHtml = document.querySelector(".lineups");
 // ---- NEW: bridge old IDs to the new UI ----
@@ -37,6 +38,12 @@ const tableBody1 = document
   .getElementsByTagName("tbody")[0];
 const tableBody2 = document
   .getElementById("playerTable2")
+  .getElementsByTagName("tbody")[0];
+const team1Table = document
+  .getElementById("t1Table")
+  .getElementsByTagName("tbody")[0];
+const team2Table = document
+  .getElementById("t2Table")
   .getElementsByTagName("tbody")[0];
 const boxScoreTable = document
   .getElementById("boxScore")
@@ -363,6 +370,10 @@ function updateUI(data) {
     simEnded = false;
   }
   if (!data.gameOver && numSims < 3) {
+    statCards.forEach((item) => {
+      item.classList.add("hidden");
+    });
+
     const cols1 = getColCount('playerTable1');   // should be 10 if you keep AVG & OPS
     const cols2 = getColCount('playerTable2');
 
@@ -518,6 +529,9 @@ function updateUI(data) {
   }
 
   if (data.gameOver || numSims > 1) {
+    statCards.forEach((item) => {
+      item.classList.remove("hidden");
+    });
     console.log("Updating text");
     document.getElementById("wins").innerHTML = `
               <h2>Results:</h2>
@@ -526,6 +540,53 @@ function updateUI(data) {
               <p>${data.team1_name} Total Runs: ${data.team1_total_runs}</p>
               <p>${data.team2_name} Total Runs: ${data.team2_total_runs}</p>                      
           `;
+
+    document.getElementById("t1Title").innerHTML = `
+      <h3>${data.team1_name}</h3>
+    `;
+    document.getElementById("t2Title").innerHTML = `
+      <h3>${data.team2_name}</h3>
+    `;
+    const cols1 = getColCount('t1Table');   // should be 10 if you keep AVG & OPS
+    const cols2 = getColCount('t2Table');
+
+    const rows1 = data.team1_hitters_results?.length || 0;
+    const rows2 = data.team2_hitters_results?.length || 0;
+
+    ensureRows(team1Table, rows1, cols1);
+    ensureRows(team2Table, rows2, cols2);
+    data.team1_hitters_names.forEach((name, index) => {
+      const row = team1Table.rows[index];
+      if (row) {
+        row.cells[0].textContent = data.team1_hitters_results[index]["Name"];
+        row.cells[1].textContent =
+          data.team1_hitters_results[index]["Position"];
+        row.cells[2].textContent = data.team1_hitters_results[index]["AB"];
+        row.cells[3].textContent = data.team1_hitters_results[index]["R"];
+        row.cells[4].textContent = data.team1_hitters_results[index]["H"];
+        row.cells[5].textContent = data.team1_hitters_results[index]["RBI"];
+        row.cells[6].textContent = data.team1_hitters_results[index]["BB"];
+        row.cells[7].textContent = data.team1_hitters_results[index]["K"];
+        row.cells[8].textContent = data.team1_hitters_results[index]["AVG"];
+        row.cells[9].textContent = data.team1_hitters_results[index]["OPS"];
+      }
+    });
+    data.team2_hitters_names.forEach((name, index) => {
+      const row = team2Table.rows[index];
+      if (row) {
+        row.cells[0].textContent = data.team2_hitters_results[index]["Name"];
+        row.cells[1].textContent =
+          data.team2_hitters_results[index]["Position"];
+        row.cells[2].textContent = data.team2_hitters_results[index]["AB"];
+        row.cells[3].textContent = data.team2_hitters_results[index]["R"];
+        row.cells[4].textContent = data.team2_hitters_results[index]["H"];
+        row.cells[5].textContent = data.team2_hitters_results[index]["RBI"];
+        row.cells[6].textContent = data.team2_hitters_results[index]["BB"];
+        row.cells[7].textContent = data.team2_hitters_results[index]["K"];
+        row.cells[8].textContent = data.team2_hitters_results[index]["AVG"];
+        row.cells[9].textContent = data.team2_hitters_results[index]["OPS"];
+      }
+    });
   }
 }
 

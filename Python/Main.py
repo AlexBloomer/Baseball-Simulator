@@ -54,7 +54,15 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
                 'team1_name': team1.name,
                 'team2_name': team2.name,
                 'runners': {},
-                'gameOver': False
+                'gameOver': False,
+                'team1_hitters_names': [hitter.name for hitter in team1.lineup],
+                'team1_hitters_results': [(hitter.getBoxStats()) for hitter in team1.lineup],
+                # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
+                # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
+                'team2_hitters_names': [hitter.name for hitter in team2.lineup],
+                'team2_hitters_results': [(hitter.getBoxStats()) for hitter in team2.lineup],
+                'team1_name': team1.name,
+                'team2_name': team2.name,
             }
             # Call the callback function to notify JS file about the update
             update_callback(currentSimState)
@@ -73,7 +81,15 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         'team1_name': team1.name,
         'team2_name': team2.name,
         'runners': {},
-        'gameOver': True
+        'gameOver': True,
+        'team1_hitters_names': [hitter.name for hitter in team1.lineup],
+        'team1_hitters_results': [(hitter.getBoxStats()) for hitter in team1.lineup],
+        # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
+        # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
+        'team2_hitters_names': [hitter.name for hitter in team2.lineup],
+        'team2_hitters_results': [(hitter.getBoxStats()) for hitter in team2.lineup],
+        'team1_name': team1.name,
+        'team2_name': team2.name
     }
 
     # Call the callback function to notify about the update
@@ -90,7 +106,13 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         'team2_runs': team2.runs,
         'team1_total_runs': team1.totalRuns,
         'team2_total_runs': team2.totalRuns,
-        'gameOver': True
+        'gameOver': True,
+        'team1_hitters_names': [hitter.name for hitter in team1.lineup],
+        'team1_hitters_results': [(hitter.getBoxStats()) for hitter in team1.lineup],
+        # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
+        # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
+        'team2_hitters_names': [hitter.name for hitter in team2.lineup],
+        'team2_hitters_results': [(hitter.getBoxStats()) for hitter in team2.lineup],
     }
 
     return results
