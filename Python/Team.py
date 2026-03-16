@@ -33,62 +33,90 @@ class Team:
         self.cumulative_weights = None
         self.numStarters = 0
 
-    def fillLineup(self, team, lineup, hitterPitches):
-        i=0
+    def fillLineup(self, team, lineup):
+        team = team.fillna(0)
+        i = 0
         for name in lineup:
             for index, row in team.iterrows():
-                filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
                 if row['Player'] == name:
-                    if not filtered.empty:
-                        pitchPerPA = filtered['Pit/PA'].values[0]
-                    else:
-                        print(f"No matching hitter found for {row['Player-additional']}.")
-                        continue
-
-                    self.addHitter(PositionPlayer(row['Player'], row['Team'], row['G'], row['PA'],row['AB'],row['H'],row['2B'],row['3B'],row['HR'],row['BB'],row['SO'],row['BA'],row['OBP'],row['OPS'], row['SLG'], row['HBP'],row['SH'],row['SF'],row['IBB'],row['Pos'],row['Player-additional'], pitchPerPA))
-            if(i==8):
+                    pa = row['AB'] + row['BB'] + row.get('HBP', 0) + row.get('SF', 0) + row.get('SH', 0)
+                    pa = pa if pa > 0 else row['AB']
+                    ba = row['H'] / row['AB'] if row['AB'] > 0 else 0
+                    obp = round((row['H'] + row['BB']) / pa if pa > 0 else 0,3)
+                    slg = round((row['H'] + row['H2B'] + 2*row['H3B'] + 3*row['HR']) / row['AB'] if row['AB'] > 0 else 0,3)
+                    ops = float(f"{(obp+slg):.3f}")
+                    self.addHitter(PositionPlayer(
+                        row['Player'], row['Team'], row['G'], pa,
+                        row['AB'], row['H'], row['H2B'], row['H3B'], row['HR'],
+                        row['BB'], row['SO'], row['BA'], obp, ops, slg,
+                        row.get('HBP', 0), row.get('SH', 0), row.get('SF', 0),
+                        row.get('IBB', 0), row.get('POS'),  # No position in Lahman, default to DH
+                        row['playerID'], 4       # No pitchPerPA, default to 4
+                    ))
+            if i == 8:
                 break
-            else:
-                i+=1
-    def fillLineupTest(self, team, hitterPitches):
-        i=0
-        for index, row in team.iterrows():
-            self.addHitter(PositionPlayer(row['Player'], row['Team'], row['G'], row['PA'],row['AB'],row['H'],row['2B'],row['3B'],row['HR'],row['BB'],row['SO'],row['BA'],row['OBP'],row['OPS'], row['SLG'], row['HBP'],row['SH'],row['SF'],row['IBB'],row['Pos'],row['Player-additional'], 4))
-            if(i==8):
-                break
-            else:
-                i+=1
-
-    def fillPitchingStaff(self, pitchingStaff, hitterPitches):
-        i=0
-        for index, row in pitchingStaff.iterrows():
-            if(row['G'] > 10):
-                filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
-                # pitchPerPA = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]['Pit/PA'].values[0]
-                # filtered = hitterPitches[hitterPitches['Name-additional'] == row['Player-additional']]
-                if not filtered.empty:
-                    pitchPerPA = filtered['Pit/PA'].values[0]
-                else:
-                    pitchPerPA = 5
-                    print(f"No matching pitcher found for {row['Player-additional']}.")
-                    continue
-                self.addPitcher(Pitcher(row['Rk'],row['Player'],row['Age'],row['Team'],row['Lg'],['WAR'],row['W'],row['L'],row['W-L%'],row['ERA'],row['G'],row['GS'],row['GF'],row['CG'],row['SHO'],row['SV'],row['IP'],row['H'],row['R'],row['ER'],row['HR'],row['BB'],row['IBB'],row['SO'],row['HBP'],row['BK'],row['WP'],row['BF'],row['ERA+'],row['FIP'],row['WHIP'],row['H9'],row['HR9'],row['BB9'],row['SO9'],row['SO/BB'],row['Awards'],row['Player-additional'], pitchPerPA))
+            i += 1
+    
+    def fillLineupTest(self, team):
         i = 0
-        for pitcher in self.pitchingStaff:
-            if pitcher.pitchType == PitcherType.STARTER:
-                self.rotation.append(pitcher)
-            elif pitcher.pitchType == PitcherType.RELIEVER and pitcher.g > 15:
-                self.relievers.append(pitcher)
-            else:
-                self.closer = pitcher
+        for index, row in team.iterrows():
+            pa = row['AB'] + row['BB'] + row.get('HBP', 0) + row.get('SF', 0) + row.get('SH', 0)
+            pa = pa if pa > 0 else row['AB']
+            obp = (row['H'] + row['BB']) / pa if pa > 0 else 0
+            slg = (row['H'] + row['H2B'] + 2*row['H3B'] + 3*row['HR']) / row['AB'] if row['AB'] > 0 else 0
+            self.addHitter(PositionPlayer(
+                row['Player'], row['Team'], row['G'], pa,
+                row['AB'], row['H'], row['H2B'], row['H3B'], row['HR'],
+                row['BB'], row['SO'], row['BA'], obp, obp+slg, slg,
+                row.get('HBP', 0), row.get('SH', 0), row.get('SF', 0),
+                row.get('IBB', 0), 'D', row['playerID'], 4
+            ))
+            if i == 8:
+                break
+            i += 1
+    def fillPitchingStaff(self, pitchingStaff):
+        pitchingStaff = pitchingStaff.fillna(0)
+        for index, row in pitchingStaff.iterrows():
+            if row['G'] > 10:
+                ip = row['IPouts'] / 3
+                whip = (row['H'] + row['BB']) / ip if ip > 0 else 0
+                bf = row.get('BF', row['IPouts'])  # BFP in our DB
+                self.addPitcher(Pitcher(
+                    0,                        # Rk
+                    row['Player'],
+                    0,                        # Age
+                    row['Team'], row['lgID'],
+                    0,                        # WAR
+                    row['W'], row['L'],
+                    row['W']/row['G'] if row['G'] > 0 else 0,  # W-L%
+                    row['ERA'], row['G'], row['GS'], row['GF'],
+                    row['CG'], row['SHO'], row['SV'],
+                    ip,
+                    row['H'], row['R'], row['ER'], row['HR'],
+                    row['BB'], row.get('IBB', 0), row['SO'],
+                    row.get('HBP', 0), row.get('BK', 0), row.get('WP', 0),
+                    bf,
+                    0,        # ERA+
+                    0,        # FIP
+                    whip,
+                    0, 0, 0, 0, 0,  # H9, HR9, BB9, SO9, SO/BB
+                    '',             # Awards
+                    row['playerID'],
+                    4               # pitchPerPA default
+            ))
         self.pitchSetup()
-        self.nextPitcher = self.rotation[0]
-
     def addHitter(self, player):
         self.lineup.append(player)
     
     def addPitcher(self, player):
         self.pitchingStaff.append(player)
+        if(player.pitchType == PitcherType.STARTER):
+            self.rotation.append(player)
+        elif player.pitchType == PitcherType.RELIEVER:
+            self.relievers.append(player)
+        else:
+            self.closer = player
+
     
     def weighted_choice(self, elements, weights):
         rnd = random.random() * weights[-1]
@@ -114,23 +142,20 @@ class Team:
         self.starterWeights = [sum(self.starterLikelihood[:i+1]) for i in range(len(self.starterLikelihood))]
         self.relieverWeights = [sum(self.relieverLikelihood[:i+1]) for i in range(len(self.relieverLikelihood))]
 
-
     def setCurrentPitcher(self, inning, outs, scoreDif):
-        print("setting pitcher")
         if(inning == 1 and outs == 0 or self.curPitcher == None):
             self.curPitcher = self.weighted_choice(self.rotation, self.starterWeights)
             self.curPitcher.gamesSim += 1
             self.numStarters += 1
         elif(inning < 9 or abs(scoreDif) > 3 or self.curPitcher.pitchType == PitcherType.CLOSER) or not self.closer:
-            self.curPitcher = self.weighted_choice(self.relievers, self.relieverWeights)
-            self.curPitcher.gamesSim +=1
+            if(len(self.relieverWeights) != 0):
+                self.curPitcher = self.weighted_choice(self.relievers, self.relieverWeights)
+                self.curPitcher.gamesSim +=1
         else:
             self.curPitcher = self.closer
             self.curPitcher.gamesSim +=1
-        # print(self.curPitcher)
     
     def getCurrentPitcher(self):
-        # print(self.curPitcher)
         return self.curPitcher
         
     def nextHitter(self):

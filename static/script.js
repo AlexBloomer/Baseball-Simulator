@@ -1,6 +1,8 @@
 // Variables to store selected team values
 let selectedTeam = "";
 let selectedTeam2 = "";
+let selectedYear1 = 2021;
+let selectedYear2 = 2021;
 let numSims = 1;
 let first = (second = third = false);
 let userLineup1 = [];
@@ -9,6 +11,8 @@ let userLineup2 = [];
 // Get the dropdown elements and the Run Simulation button
 const teamSelect = document.getElementById("team1");
 const team2Select = document.getElementById("team2");
+const yearSelect1 = document.getElementById("pickYear1")
+const yearSelect2 = document.getElementById("pickYear2")
 const numSimsInput = document.getElementById("numSimsInput");
 const runSimulationBtn = document.getElementById("runSimulation");
 const nextSimulationBtn = document.getElementById("nextSim");
@@ -57,27 +61,80 @@ simRunning.forEach((item) => {
 teamSelect.addEventListener("change", () => {
   selectedTeam = teamSelect.value; // Update selected team1
   lineupsHtml.classList.remove("hidden");
-
+  
   // populateLineup()
-  fetch("/get-lineup?team=" + selectedTeam)
-    .then((response) => response.json())
-    .then((data) => {
-      populateLineup1(data.players);
-    }); // Assuming the response gives an array of players
+  fetch(`/get-lineup?team=${selectedTeam}&year=${selectedYear1}`)
+  .then((response) => response.json())
+  .then((data) => {
+    populateLineup1(data.players);
+  }); // Assuming the response gives an array of players
 });
 
 team2Select.addEventListener("change", () => {
   selectedTeam2 = team2Select.value; // Update selected team2
   lineupsHtml.classList.remove("hidden");
-
-  fetch("/get-lineup?team=" + selectedTeam2)
-    .then((response) => response.json())
-    .then((data) => {
-      // console.log("Hello");
-      // console.log(data.players[0]);
-      populateLineup2(data.players);
-    }); // Assuming the response gives an array of players
+  
+  fetch(`/get-lineup?team=${selectedTeam2}&year=${selectedYear2}`)
+  .then((response) => response.json())
+  .then((data) => {
+    populateLineup2(data.players);
+  }); // Assuming the response gives an array of players
 });
+
+yearSelect1.addEventListener("change", () => {
+  selectedYear1 = yearSelect1.value; 
+  lineupsHtml.classList.remove("hidden");
+  fetch(`/get-teams?year=${selectedYear1}`)
+    .then(res => res.json())
+    .then(data => {
+      // data.teams is an array of {teamID, name} objects
+      const dropdown = document.getElementById('team1');
+      dropdown.innerHTML='';
+      data.teams.forEach(team => {
+        let option = document.createElement('option');
+        option.value = team.teamID;
+        option.text = team.name;
+        dropdown.appendChild(option);
+      });
+    });
+});
+
+yearSelect2.addEventListener("change", () => {
+  selectedYear2 = yearSelect2.value; 
+  lineupsHtml.classList.remove("hidden");
+  fetch(`/get-teams?year=${selectedYear2}`)
+    .then(res => res.json())
+    .then(data => {
+      // data.teams is an array of {teamID, name} objects
+      const dropdown = document.getElementById('team2');
+      dropdown.innerHTML='';
+      data.teams.forEach(team => {
+        let option = document.createElement('option');
+        option.value = team.teamID;
+        option.text = team.name;
+        dropdown.appendChild(option);
+      });
+    });
+});
+fetch("/get-years")
+  .then(res => res.json())
+  .then(data => {
+    // data.teams is an array of {teamID, name} objects
+    const dropdown1 = document.getElementById('pickYear1');
+    const dropdown2 = document.getElementById('pickYear2');
+    data.years.forEach(year => {
+      let option1 = document.createElement('option');
+      option1.value = year;
+      option1.text = year;
+      let option2 = document.createElement('option');
+      option2.value = year;
+      option2.text = year;
+      dropdown1.appendChild(option1);
+      dropdown2.appendChild(option2);
+    });
+  });
+
+
 
 function ensureRows(tbody, rowCount, colCount) {
   // add rows if missing
@@ -108,7 +165,6 @@ function ensureTotalsRow() {
 }
 
 function toNum(v) {
-  // robust: handle "", null, "-", undefined
   const n = parseInt(v, 10);
   return Number.isFinite(n) ? n : 0;
 }
@@ -134,41 +190,27 @@ function updateBoxScoreTotals(data) {
   trow.cells[12].textContent = eTot;
 }
 
-
-
 function populateLineup1(players) {
-  // Clear the list
   lineupContainer1.innerHTML = "";
-
-  // Add each player to the list
   players.forEach((player, index) => {
     const listItem = document.createElement("li");
-    listItem.innerText = `${player}`;
-    listItem.setAttribute("code", "id"); // Attach player id as data attribute
+    listItem.innerText = player.Player;
     lineupContainer1.appendChild(listItem);
   });
 
   // Make the lineup sortable
-  new Sortable(lineupContainer1, {
-    animation: 150, // Smooth dragging effect
-  });
+  new Sortable(lineupContainer1, {animation: 150,});
 }
 function populateLineup2(players) {
-  // Clear the list
   lineupContainer2.innerHTML = "";
-
-  // Add each player to the list
   players.forEach((player, index) => {
     const listItem = document.createElement("li");
-    listItem.innerText = `${player}`;
-    listItem.setAttribute("code", "id"); // Attach player id as data attribute
+    listItem.innerText = player.Player;
     lineupContainer2.appendChild(listItem);
   });
 
   // Make the lineup sortable
-  new Sortable(lineupContainer2, {
-    animation: 150, // Smooth dragging effect
-  });
+  new Sortable(lineupContainer2, {animation: 150,});
 }
 
 function getUserLineup1() {
@@ -202,8 +244,6 @@ function updateBoxScoreRows(data){
     row.cells[11].textContent = data.team2_box_score["H"];
     row.cells[12].textContent = data.team2_box_score["E"];
   }
-
-  // updateBoxScoreTotals(data);
 }
 
 function renderOuts(outs = 0){
@@ -211,7 +251,6 @@ function renderOuts(outs = 0){
   const dots = outsDotsEl.querySelectorAll('.dot');
   dots.forEach((dot, i) => dot.classList.toggle('on', i < outs));
   outsDotsEl.setAttribute('aria-label', `Outs: ${outs}`);
-  console.log(outs);
 }
 
 
@@ -226,9 +265,6 @@ function simulation_update() {
       return response.json(); // Parse the JSON from the response
     })
     .then((data) => {
-      // Handle the data returned from the Flask app
-      // console.log(data);
-      // Update your HTML or do something with the received data
     })
     .catch((error) => {
       console.error("There was a problem with the fetch operation:", error);
@@ -236,56 +272,42 @@ function simulation_update() {
 }
 
 nextSimulationBtn.addEventListener("click", () => {
-  if (!nextSimulationBtn.classList.contains("hidden")) {
-    nextSimulationBtn.classList.add("hidden");
-    console.log("hiding");
-  } else console.log("already hidden");
-
-  console.log(nextSimulationBtn.classList.contains("hidden"));
+  if (!nextSimulationBtn.classList.contains("hidden"))nextSimulationBtn.classList.add("hidden");
   simNotRunning.forEach((item) => {
     item.classList.remove("hidden");
   });
   simRunning.forEach((item) => {
     item.classList.add("hidden");
   });
-  // lineupContainer1.classList.add("lineups");
-  // lineupContainer2.classList.add("lineups");
 });
 
 // Add event listener for the Run Simulation button
 runSimulationBtn.addEventListener("click", () => {
   userLineup1 = getUserLineup1();
   userLineup2 = getUserLineup2();
-  // lineupContainer1.innerHTML = "";
-  // lineupContainer2.innerHTML = "";
   simNotRunning.forEach((item) => {
     item.classList.add("hidden");
   });
-  // if (!nextSimulationBtn.classList.contains("hidden")) {
-  //   nextSimulationBtn.classList.add("hidden");
-  // }
+
   fetchUpdates();
-  // document.getElementById("simulationState").innerHTML = `
-  //   <p>In Progress</p>
-  // `;
+
   // Check if both teams are selected
   numSims = numSimsInput.value;
   if (numSims < 3) {
-    console.log("under 3 sims ");
     simRunning.forEach((item) => {
       item.classList.remove("hidden");
     });
   }
   if (selectedTeam && selectedTeam2) {
     // Prepare the data to send
-    // console.log(team1);
-    // console.log(team2);
     const data = {
       team1: selectedTeam,
       team2: selectedTeam2,
       numSims: numSims,
       lineup1: userLineup1,
       lineup2: userLineup2,
+      year1: selectedYear1,
+      year2: selectedYear2
     };
 
     // Send the data to the Flask app
@@ -471,61 +493,57 @@ function updateUI(data) {
   } else {
     x = "bot";
   }
-  // console.log(data.gameOver);
   if (data.gameOver) {
     renderOuts(0);
     document.getElementById("first-base").style.backgroundColor = "lightblue";
     document.getElementById("second-base").style.backgroundColor = "lightblue";
     document.getElementById("third-base").style.backgroundColor = "lightblue";
-    console.log("over");
-    // document.getElementById(
-      //   "simulationState"
-      // ).innerHTML = `<p>Simulation Finished</p>`;
-      simulationEnded();
-    } else if (numSims <= 2) {
-      if (playResultEl) playResultEl.textContent = data.resultString || "";
-      const half = data.topInning ? "top" : "bot";
-      const scoreText = `${data.team1_name}: ${data.team1_runs}  ${half} ${data.inning}  ${data.team2_name}: ${data.team2_runs}`;
-      if (scoreLineEl){
-        if (scoreLineEl.id === 'scoreLine'){
-          scoreLineEl.textContent = scoreText;
-        } else {
-          scoreLineEl.innerHTML = `
-            <p>${scoreText}</p>
-          `;
-        }
-      }
-
-      // --- outs & runners (new .outs or old #below) ---
-      if (outsEl){
-        if (outsEl.classList && outsEl.classList.contains('outs')){
-          // console.log("hello");
-          // renderOuts(data.outs);
-          // outsEl.textContent = `Outs: ${data.outs}`;
-          // If you have a separate runners area, update it here too (e.g. #runners)
-          const runnersEl = document.getElementById('runners');
-          if (runnersEl) runnersEl.innerHTML = runnerString;
-        } else {
-          outsEl.innerHTML = `
-            <p>Outs: ${data.outs}</p>
-            <p style="min-height: 7em; white-space: pre-line;">${runnerString}</p>
-          `;
-        }
-      }
-
-      // --- hitter & pitcher cards (new #hitterInfo/#pitcherInfo or old #AwayPlayer/#HomePlayer) ---
-      if (data.topInning){
-        if (awayPlayerEl) awayPlayerEl.innerHTML = `${data.hitter}`;
-        // if (hitterInfoEl) hitterInfoEl.innerHTML = `Hitter: ${data.hitter}<br>On Deck: ${data.onDeckHitter}`;
-        if (homePlayerEl) homePlayerEl.innerHTML = `${data.pitcher}`;
+    simulationEnded();
+  } 
+  else if (numSims <= 2) {
+    if (playResultEl) playResultEl.textContent = data.resultString || "";
+    const half = data.topInning ? "top" : "bot";
+    const scoreText = `${data.team1_name}: ${data.team1_runs}  ${half} ${data.inning}  ${data.team2_name}: ${data.team2_runs}`;
+    if (scoreLineEl){
+      if (scoreLineEl.id === 'scoreLine'){
+        scoreLineEl.textContent = scoreText;
       } else {
-        // if (hitterInfoEl) hitterInfoEl.innerHTML = `Hitter: ${data.hitter}<br>On Deck: ${data.onDeckHitter}`;
-        if (awayPlayerEl) awayPlayerEl.innerHTML = `${data.pitcher}`;
-        if (homePlayerEl) homePlayerEl.innerHTML = `${data.hitter}`;
+        scoreLineEl.innerHTML = `
+          <p>${scoreText}</p>
+        `;
       }
-      renderOuts(data.outs);
-      document.getElementById("wins").innerHTML = ``;
-      updateBoxScoreRows(data);
+    }
+
+    // --- outs & runners (new .outs or old #below) ---
+    if (outsEl){
+      if (outsEl.classList && outsEl.classList.contains('outs')){
+        // console.log("hello");
+        // renderOuts(data.outs);
+        // outsEl.textContent = `Outs: ${data.outs}`;
+        // If you have a separate runners area, update it here too (e.g. #runners)
+        const runnersEl = document.getElementById('runners');
+        if (runnersEl) runnersEl.innerHTML = runnerString;
+      } else {
+        outsEl.innerHTML = `
+          <p>Outs: ${data.outs}</p>
+          <p style="min-height: 7em; white-space: pre-line;">${runnerString}</p>
+        `;
+      }
+    }
+
+    // --- hitter & pitcher cards (new #hitterInfo/#pitcherInfo or old #AwayPlayer/#HomePlayer) ---
+    if (data.topInning){
+      if (awayPlayerEl) awayPlayerEl.innerHTML = `${data.hitter}`;
+      // if (hitterInfoEl) hitterInfoEl.innerHTML = `Hitter: ${data.hitter}<br>On Deck: ${data.onDeckHitter}`;
+      if (homePlayerEl) homePlayerEl.innerHTML = `${data.pitcher}`;
+    } else {
+      // if (hitterInfoEl) hitterInfoEl.innerHTML = `Hitter: ${data.hitter}<br>On Deck: ${data.onDeckHitter}`;
+      if (awayPlayerEl) awayPlayerEl.innerHTML = `${data.pitcher}`;
+      if (homePlayerEl) homePlayerEl.innerHTML = `${data.hitter}`;
+    }
+    renderOuts(data.outs);
+    document.getElementById("wins").innerHTML = ``;
+    updateBoxScoreRows(data);
   }
 
   if (data.gameOver || numSims > 1) {
@@ -597,9 +615,9 @@ continueBtn.addEventListener("click", function () {
   });
 });
 
-function openSeasonPage() {
-  fetch("/season", {
-    method: "POST",
-  });
-}
+// function openSeasonPage() {
+//   fetch("/season", {
+//     method: "POST",
+//   });
+// }
 

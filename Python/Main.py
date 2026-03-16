@@ -1,7 +1,7 @@
 # python_code/main_simulation.py
 from Python.PositionPlayer import *
 from Python.PlayGame import Game
-from Python.PlaySeason import Season
+# from Python.PlaySeason import Season
 import time
 
 def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
@@ -19,11 +19,9 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
     # Used for logging how long a sim takes
     lastTime = time.time()
     totTime = 0
-    #print('A')
     
     # For loop which runs the number of sims
     for i in range(int(numSims)):
-        print(i)
         # Log how long every 1000 sims takes
         if((i+1)%1000 == 0):
             totTime += time.time() - lastTime
@@ -117,28 +115,28 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
 
     return results
 
-def simulateSeason(team, numSims, update_callback, waitForNextBatter):
-    season = Season(team)
-    for i in range(numSims):
-        record = season.simSeason(update_callback, waitForNextBatter)
-        currentSimState = {
-            'sim_game': False,
-            'end_sim': True,
-            'team': team.name,
-            'wins': season.wins,
-            'losses': season.losses,
-            'average_wins': season.totalWins/(i+1),
-            'average_losses': season.totalLosses/(i+1)
-        }
-        update_callback(currentSimState)
-    currentSimState = {
-        'sim_game': False,
-        'end_sim': True,
-        'team': team.name,
-        'wins': season.wins,
-        'losses': season.losses,
-        'average_wins': season.totalWins/numSims,
-        'average_losses': season.totalLosses/numSims
-    }
-    update_callback(currentSimState)
+# def simulateSeason(team, numSims, update_callback, waitForNextBatter, conn, year=2021):
+#     season = Season(team, conn, year)
+#     for i in range(numSims):
+#         record = season.simSeason(update_callback, waitForNextBatter)
+#         currentSimState = {
+#             'sim_game': False,
+#             'end_sim': True,
+#             'team': team.name,
+#             'wins': season.wins,
+#             'losses': season.losses,
+#             'average_wins': season.totalWins/(i+1),
+#             'average_losses': season.totalLosses/(i+1)
+#         }
+#         update_callback(currentSimState)
+#     currentSimState = {
+#         'sim_game': False,
+#         'end_sim': True,
+#         'team': team.name,
+#         'wins': season.wins,
+#         'losses': season.losses,
+#         'average_wins': season.totalWins/numSims,
+#         'average_losses': season.totalLosses/numSims
+#     }
+#     update_callback(currentSimState)
     

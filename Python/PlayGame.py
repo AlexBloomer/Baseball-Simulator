@@ -36,7 +36,6 @@ class Game:
     # Update JS with new information
     def getCurrentSimulationState(self):
         #  Update the currentSimState variable with new information
-        # print("getting current pitcher")
         # tempRunners = {runner.name: value for runner, value in self.bases.runners.items()}
         currentSimState = {
             'sim_game': True,

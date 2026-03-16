@@ -11,6 +11,8 @@ class Position(Enum):
     CENTER_FIELD = "CF"
     RIGHT_FIELD = "RF"
     LEFT_FIELD = "LF"
+    OUT_FIELD = "OF"
+    PITHCER = "P"
 
 # Result Enum
 class Result(Enum):
@@ -46,8 +48,8 @@ class PositionPlayer:
         self.sh = SH
         self.sf = SF
         self.intentionalWalks = IBB
-        self.posCode = Pos
-        self.position = self.getPos()
+        self.position = Pos
+        # self.position = self.getPos()
         self.code = code
         self.singlePct = (self.hits -self.doubles-self.triples-self.hr)/self.pa
         self.doublePct = self.doubles/self.pa
@@ -70,7 +72,7 @@ class PositionPlayer:
         results = ['At Bats', 'Hits', 'Total Bases', 'Batting Average Actual', 'Batting Average Sim', 'OPS Actual', 'OPS Sim', 'SLG Actual', 'SLG Sim', 'OBP Actual', 'OBP Sim']
         self.calcStats = dict.fromkeys(results,0)
     def __str__(self):
-        return f"{self.name}<br>Position: {self.position.value}<br>AVG: {self.ba}<br>OPS: {self.ops}"
+        return f"{self.name}<br>Position: {self.position}<br>AVG: {self.ba}<br>OPS: {self.ops}"
     
     def addResult(self, res):
         self.stats[res] += 1
@@ -84,7 +86,7 @@ class PositionPlayer:
 
     def getBoxStats(self):
         self.boxStats['Name'] = self.name
-        self.boxStats['Position'] = self.position.value
+        self.boxStats['Position'] = self.position
         self.boxStats['AB'] = self.abSim
         self.boxStats['R'] = self.runsSim
         self.boxStats['H'] = self.hitsSim
