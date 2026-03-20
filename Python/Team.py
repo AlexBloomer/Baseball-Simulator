@@ -50,7 +50,7 @@ class Team:
                         row['AB'], row['H'], row['H2B'], row['H3B'], row['HR'],
                         row['BB'], row['SO'], row['BA'], obp, ops, slg,
                         row.get('HBP', 0), row.get('SH', 0), row.get('SF', 0),
-                        row.get('IBB', 0), row.get('POS'),  # No position in Lahman, default to DH
+                        row.get('IBB', 0), row.get('POS'), 
                         row['playerID'], 4       # No pitchPerPA, default to 4
                     ))
             if i == 8:

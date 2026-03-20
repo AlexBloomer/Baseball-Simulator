@@ -166,6 +166,7 @@ test.py
 Python/MainMulti.py
 Python/PlaySeason.py
 bbdb
+lahman_1871-2025_csv
 Data
 Database.py
 *.zip

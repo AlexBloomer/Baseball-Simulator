@@ -39,11 +39,9 @@ class Pitcher:
         self.inningsPerApp = self.ip/self.g
         self.pitchCount = 0
         self.pitchPerPA = pitchPerPA
-        # Singles make up 65% of hits
         htemp = self.h - self.hr
         self.singlePct = (htemp*.754)/self.battersFaced
-        # self.singlePct = self.h/self.batters
-        # doubles make up 19.5% of hits
+
         self.doublePct = (htemp*.226)/self.battersFaced
         # triples make up 1.75% of hits
         self.triplePct = (htemp*.0203)/self.battersFaced

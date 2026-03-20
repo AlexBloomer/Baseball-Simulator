@@ -122,17 +122,6 @@ class PositionPlayer:
         self.calcStats['OPS Actual'] = self.ops
         self.calcStats['OBP Actual'] = self.obp
         self.calcStats['SLG Actual'] = self.slg
-    
-
-    # def getGameResults(self):
-    #     maxResult = 16
-    #     results = ''
-    #     for key, value in self.stats.items():
-    #         results += f'{key.value}: {value}\t'
-    #     results += '\n\t\t\t\t'
-    #     self.calculateStats()
-    #     for key, value in self.calcStats.items():
-    #         results += f'{key}: {value}\t'
         
     #     return results
     def getGameResults(self):
