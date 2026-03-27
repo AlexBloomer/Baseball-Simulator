@@ -50,19 +50,15 @@ class Game:
             'runners': {runner.name: value for runner, value in self.bases.runners.items()},
             'outs': self.outs,
             'inning': self.inning,
-            # 'pitcher': self.currentPitcher.__str__(),
             'pitcher': self.team2.getCurrentPitcher().__str__() if self.topInning else self.team1.getCurrentPitcher().__str__(),
-            # 'hitter': self.currentHitter.__str__(),
             'hitter': self.team1.getCurrentBatter().__str__() if self.topInning else self.team2.getCurrentBatter().__str__(),
             'onDeckHitter': self.team1.getOnDeckHitter().__str__() if self.topInning else self.team2.getOnDeckHitter().__str__(),
             'result': self.result.value if self.result is not None else "",
             'resultString': self.resultString,
-            'gameOver': False,
+            'simOver': False,
             'topInning': self.topInning,
             'team1_hitters_names': [hitter.name for hitter in self.team1.lineup],
             'team1_hitters_results': [(hitter.getBoxStats()) for hitter in self.team1.lineup],
-            # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
-            # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
             'team2_hitters_names': [hitter.name for hitter in self.team2.lineup],
             'team2_hitters_results': [(hitter.getBoxStats()) for hitter in self.team2.lineup],
             'team1_box_score': self.team1.boxScore,
@@ -94,7 +90,6 @@ class Game:
                 self.resultString = f'{hitter.name} hit a sacrifice fly' 
             case Result.SACRIFICE_HIT:
                 self.resultString = f'{hitter.name} hit a sacrifice bunt' 
-        print(self.resultString)
     # Returns True if batter got a hit(Single, double, triple, or homerun)
     # Returns False if batter didn't get a hit
     def isHit(self, result):

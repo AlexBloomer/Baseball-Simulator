@@ -34,7 +34,7 @@ body {
   color: white;
   width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 /* center the title without absolute positioning */
@@ -59,16 +59,18 @@ header a:hover, .TopBar a:hover { color: #ffd700; }
 /* -------- Picking Teams -------- */
 .pickTeams { 
   display: grid; grid-template-columns: 1fr 1fr; gap: 18px; 
-  justify-content: center; margin-bottom: 18px;
+  justify-content: center; margin-bottom: 5px;
 }
 .pickAwayTeam, .pickHomeTeam {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   background: var(--surface);
-  padding: 14px;
+  padding: 8px;
 }
-.pickAwayTeam h2, .pickHomeTeam h2 { margin: 0 0 8px; }
+.pickAwayTeam h3, .pickHomeTeam h3 { margin: 0 0 5px; }
+#t1Title, #t2Title{ margin: 0 0 0;}
+#t1Table, #t2Table{ min-height: 95%;}
 
 select {
   width: 100%;
@@ -83,8 +85,7 @@ select {
 select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,0,0,.15); }
 
 
-/* -------- Setting lineups -------- */
-#lineupHeader { margin: 10px 0 10px; }
+#lineupHeader { margin: 5px 0 5px; }
 
 .lineups {
   display: grid;
@@ -99,7 +100,7 @@ select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,0,0,.
 
 .lineups ol {
   list-style: none; margin:0; padding:0;
-  max-height: 350px; overflow: auto;
+  max-height: 380px; overflow: auto;
   border-right: 1px solid var(--border);
 }
 .lineups ol:last-child { border-right: none; }
@@ -160,8 +161,9 @@ select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,0,0,.
 /* SIMULATION RUNNING */
 /* page container wraps all the items when a simulation is running*/
 .container {
-  margin: 14px auto 0px;
+  margin: 5px auto 0px;
   padding: 0 20px;
+  min-height: 85%;
 }
 
 
@@ -201,7 +203,7 @@ tbody tr:nth-child(odd){ background:#fcfcff; }
 /* #boxScore { width: 98%; margin: 14px auto 0; } */
 
 /* Hidden toggles */
-.hidden { display:none; }
+.hidden { display:none !important; }
 
 /* -------- Responsive -------- */
 @media (max-width: 900px){
@@ -309,6 +311,31 @@ tbody tr:nth-child(odd){ background:#fcfcff; }
   border-radius: 2px;
 }
 
+.base-runner {
+  position: absolute;
+  background: white;
+  color: black;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#runner-first {
+  transform: translate(-20px, -23px);
+}
+
+#runner-second {
+  transform: translate(-60%,-100%) rotate(-45deg);
+}
+
+#runner-third {
+  transform: translateX(-60%) rotate(-90deg);
+}
+
+
 .home{ top:70%; left:50%; transform: translate(-50%, 50%) rotate(45deg); }
 .first-base{ top:50%; left:95%; transform: translate(-100%, -50%) rotate(45deg); }
 .second-base{ top:5%; left:50%; transform: translate(-50%, 0) rotate(45deg); }
@@ -394,6 +421,18 @@ tbody tr:nth-child(odd){ background:#fcfcff; }
 .lineupTable td:not(:first-child) {
   text-align: center;
   font-variant-numeric: tabular-nums;  /* makes numbers line up neatly */
+}
+
+.statCards {
+  display: flex;
+  gap: 16px;
+  min-height: 53vh;
+}
+
+.statCards .card {
+  flex: 1;
+  min-width: 0;
+  min-height: 100%;
 }
 
 #finalStats {

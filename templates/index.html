@@ -51,7 +51,7 @@
           <select id="pickYear1">
     
           </select>
-          <h2>Away Team</h2>
+          <h3>Away Team</h3>
           <select id="team1">
           </select>
         </div>
@@ -59,7 +59,7 @@
           <select id="pickYear2">
     
           </select>
-          <h2>Home Team</h2>
+          <h3>Home Team</h3>
           <select id="team2">
           </select>
         </div>
@@ -95,32 +95,33 @@
       <div class="buttons">
         <button class="simNotRunning" id="runSimulation">Run Simulation</button>
       </div>
-      <div class="buttons">
-        <button id="nextSim">Next Simulation</button>
-      </div>
-      <div id="wins"></div>
-      <div class="statCards">
-        <div class="card">
-          <h3 id="t1Title">Away Team</h3>
-          <table id="t1Table">
-            <thead>
-              <tr><th>Name</th><th>Position</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>K</th><th>AVG</th><th>OPS</th></tr>
-            </thead>
-            <tbody id="t1StatsBody"></tbody>
-          </table>
+      <div class="simNotRunning" id="postSimResults">
+        <div id="wins"></div>
+        <div class="statCards">
+          <div class="card">
+            <h3 id="t1Title">Away Team</h3>
+            <table id="t1Table">
+              <thead>
+                <tr><th>Name</th><th>Position</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>K</th><th>AVG</th><th>OPS</th></tr>
+              </thead>
+              <tbody id="t1StatsBody"></tbody>
+            </table>
+          </div>
+          
+          <div class="card">
+            <h3 id="t2Title">Home Team</h3>
+            <table id="t2Table">
+              <thead>
+                <tr><th>Name</th><th>Position</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>K</th><th>AVG</th><th>OPS</th></tr>
+              </thead>
+              <tbody id="t2StatsBody"></tbody>
+            </table>
+          </div>
         </div>
-        
-        <div class="card">
-          <h3 id="t2Title">Home Team</h3>
-          <table id="t2Table">
-            <thead>
-              <tr><th>Name</th><th>Position</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>K</th><th>AVG</th><th>OPS</th></tr>
-            </thead>
-            <tbody id="t2StatsBody"></tbody>
-          </table>
+        <div class="buttons">
+          <button id="nextSim">Next Simulation</button>
         </div>
       </div>
-      
       <div class="simRunning">
         <!-- Main game layout -->
         <div class="gameLayout">
@@ -155,9 +156,15 @@
             <!-- Field (diamond graphic) -->
             <div class="field">
               <div class="diamond home" id="home"></div>
-              <div class="diamond first-base" id="first-base"></div>
-              <div class="diamond second-base" id="second-base"></div>
-              <div class="diamond third-base" id="third-base"></div>
+              <div class="diamond first-base" id="first-base">
+                <span class="base-runner" id="runner-first"></span>
+              </div>
+              <div class="diamond second-base" id="second-base">
+                <span class="base-runner" id="runner-second"></span>
+              </div>
+              <div class="diamond third-base" id="third-base">
+                <span class="base-runner" id="runner-third"></span>
+              </div>
             </div>
             <div id="playResult" class="result" role="status" aria-live="polite"></div>
             <div class="outs">

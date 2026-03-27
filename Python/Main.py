@@ -25,7 +25,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         # Log how long every 1000 sims takes
         if((i+1)%1000 == 0):
             totTime += time.time() - lastTime
-            print(f'SIMULATION {i+1}: {time.time() - lastTime}')
+            # print(f'SIMULATION {i+1}: {time.time() - lastTime}')
             lastTime = time.time()
         # Play the game
         winner = game.playGame(update_callback,waitForNextBatter)
@@ -52,11 +52,9 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
                 'team1_name': team1.name,
                 'team2_name': team2.name,
                 'runners': {},
-                'gameOver': False,
+                'simOver': False,
                 'team1_hitters_names': [hitter.name for hitter in team1.lineup],
                 'team1_hitters_results': [(hitter.getBoxStats()) for hitter in team1.lineup],
-                # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
-                # 'team1_pitchers_results': [(pitcher.boxStats) for pitcher in self.team1.pitchingStaff],
                 'team2_hitters_names': [hitter.name for hitter in team2.lineup],
                 'team2_hitters_results': [(hitter.getBoxStats()) for hitter in team2.lineup],
                 'team1_name': team1.name,
@@ -66,7 +64,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
             update_callback(currentSimState)
 
     # log average time per 1000 
-    print(f'AVG Time per 1000: {totTime/(numSims/1000)}')
+    # print(f'AVG Time per 1000: {totTime/(numSims/1000)}')
 
     #  update the currentSimState with the final information
     currentSimState = {
@@ -79,7 +77,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         'team1_name': team1.name,
         'team2_name': team2.name,
         'runners': {},
-        'gameOver': True,
+        'simOver': True,
         'team1_hitters_names': [hitter.name for hitter in team1.lineup],
         'team1_hitters_results': [(hitter.getBoxStats()) for hitter in team1.lineup],
         # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
@@ -104,7 +102,7 @@ def simulateGames(team1, team2, numSims, update_callback, waitForNextBatter):
         'team2_runs': team2.runs,
         'team1_total_runs': team1.totalRuns,
         'team2_total_runs': team2.totalRuns,
-        'gameOver': True,
+        'simOver': True,
         'team1_hitters_names': [hitter.name for hitter in team1.lineup],
         'team1_hitters_results': [(hitter.getBoxStats()) for hitter in team1.lineup],
         # 'team1_pitchers_names': [pitcher.name for pitcher in self.team1.pitchingStaff],
